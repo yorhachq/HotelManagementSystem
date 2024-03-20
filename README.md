@@ -1,7 +1,7 @@
 # HotelManagementSystem
-Project Start Date: March 20, 2024
+**Project Start Date:** March 20, 2024
 
-Description: My capstone project build by SpringBoot 3 &amp; Vue 3. 
+**Description:** My capstone project build by SpringBoot 3 &amp; Vue 3. 
 
 This project is using a frontend-backend separation architecture.
 
