@@ -1,0 +1,46 @@
+# 注意:本项目使用的Bucket:yorha-chq-picture已配置了防盗链规则,在更换端口及上线地址时需要同步更新对应防盗链规则
+# 控制台:https://oss.console.aliyun.com/bucket/oss-cn-shanghai/yorha-chq-picture/data-security/referrer
+server:
+  port: 8080
+  tomcat:
+    # 设置内嵌的tomcat的最大吞吐量,-1表示不限制
+    max-swallow-size: -1
+spring:
+  application:
+    name: ElysianNest
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/elysian_nest
+    username: root
+    password: Chenhuaqing718
+  servlet:
+    multipart:
+      # 设置单个上传文件的最大大小，默认为 1MB
+      max-file-size: 5MB
+      # 设置整个请求中最大允许的文件大小，默认为 10MB
+      max-request-size: 50MB
+  data:
+    redis:
+      host: 172.25.104.245
+      port: 6379
+      password: Chenhuaqing718
+      timeout: 10000
+      lettuce:
+        pool:
+          max-active: 100  #最大连接
+          max-idle: 80   #最大空闲连接
+          min-idle: 10   #最小空闲连接
+          max-wait: 100ms #连接等待时间
+
+mybatis:
+  configuration:
+    #开启驼峰命名和下划线命名的自动转换(因为数据库中对应字段使用的是下划线命名，而实体类中使用的是驼峰命名)
+    map-underscore-to-camel-case: true
+
+aliyun:
+  oss:
+    endpoint: https://oss-cn-shanghai.aliyuncs.com
+    bucketName: yorha-chq-picture
+    # bucket内的路径
+    objectPath: elysian-nest/
+
