@@ -7,16 +7,23 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 酒店楼层(已弃用，直接在HotelRoom中添加对应字段)
+ *  酒店房间类型
  */
 @Data
-public class HotelFloor {
+public class HotelRoomType {
     @NotNull(groups = Update.class)
-    private Integer floorId;
-    // 楼层数
-    private Integer floorNumber;
-    // 描述
+    private Integer roomTypeId;
+    // 房型名称
+    private String typeName;
+    // 房型价格
+    private Double price;
+    // 房型图片
+    private String image;
+    // 房型描述
     private String description;
+    // 房型状态(启用|冻结)
+    private String status;
+
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 

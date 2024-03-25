@@ -3,7 +3,7 @@ package com.chq.hms.pojo;
 import lombok.Data;
 
 /**
- * 数据统计类
+ * 数据统计
  */
 @Data
 public class DataStatistics {

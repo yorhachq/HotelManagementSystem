@@ -10,12 +10,12 @@ import org.hibernate.validator.constraints.Length;
 import java.time.LocalDateTime;
 
 /**
- * 用户类
+ * 系统用户
  */
 @Data
 public class SysUser {
     @NotNull(groups = Update.class)
-    private Integer usrId; //主键ID
+    private Integer userId; //主键ID
     private String username; //用户名
 
     //注意别导错包，正确的应为com.fasterxml.jackson.annotation.JsonIgnore
@@ -40,7 +40,10 @@ public class SysUser {
 
     private String avatar; //用户头像地址
     private Integer roleId; //角色ID
-    private String status; //账户状态
+    // 账户状态(正常,封禁,冻结)
+    // 注:冻结仅用于软删除,防止出现外键引用问题
+    private String status;
+
     private LocalDateTime createTime; //创建时间
     private LocalDateTime updateTime; //更新时间
 
