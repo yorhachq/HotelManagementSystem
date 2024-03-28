@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @Data
 public class SysRole {
     private Integer roleId;
-    // 角色名称
+    // 角色名称(用于外部展示)
     private String roleName;
-    // 角色代码
+    // 角色代码(用于内部处理)
     private String roleCode;
     // 角色描述(可在此说明角色的权限)
     private String Description;
