@@ -35,7 +35,7 @@ public class SysUserController {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    private static String verifyCode;
+    private static String verifyCode = "";
 
     //用户注册
     @PostMapping("/register")
@@ -162,12 +162,11 @@ public class SysUserController {
     public Result sendVerifyEmail(@RequestBody Map<String, String> params) {
         //参数校验
         String email = params.get("email");
-        if (!StringUtils.hasLength(email)) {
+        if (!EmailUtil.checkEmailFormat(email)) {
             return Result.error("请填写有效邮箱!");
         }
         //发送验证码
         verifyCode = EmailUtil.sendVerifyEmail(email, "您正在进行重置密码操作");
-
         return Result.success();
     }
 
@@ -177,19 +176,29 @@ public class SysUserController {
         //参数校验
         String username = params.get("username");
         String email = params.get("email");
-        String code = params.get("code");
-        String newPwd = params.get("new_pwd");
-        if (!(StringUtils.hasLength(username) && StringUtils.hasLength(email) && StringUtils.hasLength(code) && StringUtils.hasLength(newPwd))) {
+        String code = params.get("verifyCode");
+        String password = params.get("password");
+        if (!(StringUtils.hasLength(username) && StringUtils.hasLength(email) && StringUtils.hasLength(code) && StringUtils.hasLength(password))) {
             return Result.error("确少必要的参数!");
         }
-        if (!newPwd.matches("^\\S{5,16}$")) {
+        if (!password.matches("^\\S{5,16}$")) {
             return Result.error("密码长度应为5~16位!");
         }
         if (!verifyCode.equals(code)) {
             return Result.error("验证码错误!");
         }
+        SysUser user = userService.findByUserName(username);
+        if (user == null) {
+            return Result.error("用户不存在!");
+        } else if (!user.getStatus().equals("正常")) {
+            return Result.error("账户状态异常，拒绝操作!");
+        } else if (user.getEmail() == null || user.getEmail().isEmpty()) {
+            return Result.error("用户未绑定邮箱，无法重置密码，请联系超管处理!");
+        } else if (!user.getEmail().equals(email)) {
+            return Result.error("邮箱与用户绑定邮箱不一致!");
+        }
         try {
-            userService.updatePwd(newPwd);
+            userService.updatePwd(password);
             return Result.success();
         } catch (Exception e) {
             return Result.error("重置密码失败!");

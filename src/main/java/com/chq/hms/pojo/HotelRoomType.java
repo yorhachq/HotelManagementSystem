@@ -1,5 +1,6 @@
 package com.chq.hms.pojo;
 
+import com.chq.hms.anno.AvailableStatus;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class HotelRoomType {
     // 房型描述
     private String description;
     // 房型状态(启用|冻结)
+    @AvailableStatus
     private String status;
 
     private LocalDateTime createTime;

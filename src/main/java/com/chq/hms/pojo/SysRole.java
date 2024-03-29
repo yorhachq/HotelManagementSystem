@@ -1,5 +1,6 @@
 package com.chq.hms.pojo;
 
+import com.chq.hms.anno.AvailableStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class SysRole {
     // 角色描述(可在此说明角色的权限)
     private String Description;
     // 角色状态(启用|冻结)
+    @AvailableStatus
     private String status;
 
     private LocalDateTime createTime;

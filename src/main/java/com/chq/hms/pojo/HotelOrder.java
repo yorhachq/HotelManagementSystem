@@ -1,5 +1,6 @@
 package com.chq.hms.pojo;
 
+import com.chq.hms.anno.OrderStatus;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class HotelOrder {
     // 退房日期
     private LocalDate checkoutDate;
     // 订单状态(已预订/入住中/已退房/已取消)
+    @OrderStatus
     private String status;
     // 支付金额(若已取消订单，前端加删除线处理后显示金额，且该笔订单不纳入营业额统计)
     private Double payment;

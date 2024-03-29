@@ -1,6 +1,7 @@
 package com.chq.hms.util;
 
 import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.extra.mail.MailUtil;
 
 public class EmailUtil {
@@ -19,5 +20,11 @@ public class EmailUtil {
         MailUtil.send(email, emailTitle, emailContent, true);
 
         return verificationCode;
+    }
+
+    // 校验邮箱格式
+    public static boolean checkEmailFormat(String email) {
+        String regex = "^(([^<>()\\\\.,;:\\s@\"']+(\\.[^<>()\\\\.,;:\\s@\"']+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        return ReUtil.isMatch(regex, email);
     }
 }

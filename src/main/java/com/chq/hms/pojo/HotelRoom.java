@@ -1,5 +1,6 @@
 package com.chq.hms.pojo;
 
+import com.chq.hms.anno.RoomStatus;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
@@ -23,6 +24,7 @@ public class HotelRoom {
     @NotNull
     private Integer roomTypeId;
     // 房间状态(空闲,已预订,已入住,冻结)
+    @RoomStatus
     private Integer status;
 
     private LocalDateTime createTime;

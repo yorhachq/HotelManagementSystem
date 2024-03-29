@@ -1,6 +1,7 @@
 package com.chq.hms.pojo;
 
 
+import com.chq.hms.anno.AvailableStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
 import jakarta.validation.groups.Default;
@@ -42,6 +43,7 @@ public class SysUser {
     private Integer roleId; //角色ID
     // 账户状态(正常,封禁,冻结)
     // 注:冻结仅用于软删除,防止出现外键引用问题
+    @AvailableStatus
     private String status;
 
     private LocalDateTime createTime; //创建时间
