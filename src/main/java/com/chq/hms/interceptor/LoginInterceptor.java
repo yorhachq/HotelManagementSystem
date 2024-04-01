@@ -34,7 +34,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                 throw new RuntimeException("认证失败：token不存在或已过期！");
             }
             Map<String, Object> claims = JwtUtil.parseToken(token);
-            if (claims.get("refreshToken") != null) {
+            if (claims.get("refreshToken") != null && claims.get("refreshToken").equals(true)) {
                 //不允许使用refreshToken进行业务请求
                 throw new RuntimeException("认证失败：非法的refreshToken用途！");
             }
@@ -42,9 +42,9 @@ public class LoginInterceptor implements HandlerInterceptor {
             ThreadLocalUtil.set(claims);
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             //设置http响应状态码为401 Unauthorized
             response.setStatus(401);
+            System.out.println("LoninIntercpter:" + e.getMessage());
             return false;
         }
     }

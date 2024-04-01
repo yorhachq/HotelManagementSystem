@@ -52,6 +52,11 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    public void updatePwd(Integer id, String newPwd) {
+        userMapper.updatePwd(Md5Util.getMD5String(newPwd), id);
+    }
+
+    @Override
     public SysRole findRoleById(Integer roleId) {
         return userMapper.findRoleById(roleId);
     }

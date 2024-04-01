@@ -67,10 +67,10 @@ public class SysUserController {
             claims.put("id", loginUser.getUserId());
             claims.put("username", loginUser.getUsername());
             // 访问用token
-            String accessToken = JwtUtil.genToken(claims);
+            String accessToken = JwtUtil.genToken(claims, 12);
             // 刷新用token，添加自定义的claim来标识其用途
             claims.put("refreshToken", true);
-            String refreshToken = JwtUtil.genToken(claims);
+            String refreshToken = JwtUtil.genToken(claims, 24);
             //把token存储到Redis中
             ValueOperations<String, String> valueOps = stringRedisTemplate.opsForValue();
             valueOps.set(accessToken, accessToken, 12, TimeUnit.HOURS); //登录有效期12小时,与JWT token有效期一致
@@ -198,10 +198,47 @@ public class SysUserController {
             return Result.error("邮箱与用户绑定邮箱不一致!");
         }
         try {
-            userService.updatePwd(password);
+            userService.updatePwd(user.getUserId(), password);
+            // 若成功，使本次验证码失效
+            verifyCode = "";
             return Result.success();
         } catch (Exception e) {
-            return Result.error("重置密码失败!");
+            return Result.error("重置密码失败!" + e.getMessage());
         }
+    }
+
+    // 刷新token(只有已登录情况下才接受请求,accessToken到期时,会从前端传入带有refreshToken的请求)
+    @PostMapping("/refresh-token")
+    public Result updateToken(@RequestHeader("Authorization") String accessToken, @RequestParam(value = "refreshToken") String refreshToken) {
+        // 从refreshToken中获取用户基本信息
+        Map<String, Object> claims = JwtUtil.parseToken(refreshToken);
+        // 从Redis中主动销毁旧的Token
+        stringRedisTemplate.opsForValue().getOperations().delete(accessToken);
+        stringRedisTemplate.opsForValue().getOperations().delete(refreshToken);
+        // 重新生成刷新用Token
+        refreshToken = JwtUtil.genToken(claims, 24);
+        // 重新生成访问用Token
+        claims.put("refreshToken", false);
+        accessToken = JwtUtil.genToken(claims, 12);
+        // 存储新的refreshToken和accessToken到Redis
+        ValueOperations<String, String> valueOps = stringRedisTemplate.opsForValue();
+        valueOps.set(accessToken, accessToken, 12, TimeUnit.HOURS);
+        valueOps.set(refreshToken, refreshToken, 24, TimeUnit.HOURS);
+        // 生成过期时间戳
+        long expires = System.currentTimeMillis() + 12 * 60 * 60 * 1000;
+        // 封装返回数据
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("accessToken", accessToken);
+        data.put("refreshToken", refreshToken);
+        data.put("expires", expires);
+        return Result.success(data);
+    }
+
+    // 用户登出(销毁Redis中的token记录)
+    @PostMapping("/logout")
+    public Result logout(@RequestBody Map<String, String> params) {
+        stringRedisTemplate.opsForValue().getOperations().delete(params.get("accessToken"));
+        stringRedisTemplate.opsForValue().getOperations().delete(params.get("refreshToken"));
+        return Result.success();
     }
 }

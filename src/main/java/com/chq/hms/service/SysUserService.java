@@ -17,8 +17,11 @@ public interface SysUserService {
     //更新用户头像
     void updateAvatar(String avatarUrl);
 
-    //更新用户密码
+    //更新用户密码(已登录)
     void updatePwd(String newPwd);
+
+    //更新用户密码(忘记密码，未登录)
+    void updatePwd(Integer id, String newPwd);
 
     //获取用户角色
     SysRole findRoleById(Integer roleId);

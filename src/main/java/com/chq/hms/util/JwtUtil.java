@@ -11,11 +11,11 @@ public class JwtUtil {
 
     private static final String KEY = "@C@H@QdeJWT718";
 
-	//接收业务数据,生成token并返回
-    public static String genToken(Map<String, Object> claims) {
+    //接收业务数据,生成token并返回
+    public static String genToken(Map<String, Object> claims, Integer expireHour) {
         return JWT.create()
                 .withClaim("claims", claims) //添加载荷
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 12)) //添加过期时间12小时
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * expireHour)) //添加过期时间
                 .sign(Algorithm.HMAC256(KEY)); //指定算法并配置密钥
     }
 
