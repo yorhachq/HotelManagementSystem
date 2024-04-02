@@ -26,6 +26,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //获取来自浏览器请求头的token，进行令牌验证
         String token = request.getHeader("Authorization");
+        System.out.println("token:" + token);
         //验证token
         try {
             //尝试从Redis中获取相同的token

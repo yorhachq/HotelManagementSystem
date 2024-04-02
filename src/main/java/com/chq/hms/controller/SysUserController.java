@@ -79,7 +79,7 @@ public class SysUserController {
             long expires = System.currentTimeMillis() + 12 * 60 * 60 * 1000;
             // 获取用户角色ID,并通过ID获取角色代码
             SysRole sysRole = userService.findRoleById(loginUser.getRoleId());
-            String roles = sysRole.getRoleCode();
+            String[] roles = {sysRole.getRoleCode()};
             // 封装登录需要的返回数据
             Map<String, Object> data = new LinkedHashMap<>();
             data.put("username", username);
