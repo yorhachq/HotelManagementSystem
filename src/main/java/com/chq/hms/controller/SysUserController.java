@@ -1,8 +1,8 @@
 package com.chq.hms.controller;
 
-import com.chq.hms.pojo.Result;
-import com.chq.hms.pojo.SysRole;
-import com.chq.hms.pojo.SysUser;
+import com.chq.hms.domain.Result;
+import com.chq.hms.domain.SysRole;
+import com.chq.hms.domain.SysUser;
 import com.chq.hms.service.SysUserService;
 import com.chq.hms.util.EmailUtil;
 import com.chq.hms.util.JwtUtil;

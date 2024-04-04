@@ -1,5 +1,6 @@
 package com.chq.hms.interceptor;
 
+import cn.hutool.log.StaticLog;
 import com.chq.hms.util.JwtUtil;
 import com.chq.hms.util.ThreadLocalUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,18 +27,18 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //获取来自浏览器请求头的token，进行令牌验证
         String token = request.getHeader("Authorization");
-        System.out.println("token:" + token);
+
         //验证token
         try {
             //尝试从Redis中获取相同的token
             if (stringRedisTemplate.opsForValue().get(token) == null) {
                 //如果token不存在,抛出运行异常
-                throw new RuntimeException("认证失败：token不存在或已过期！");
+                throw new RuntimeException("认证失败: token不存在或已过期！");
             }
             Map<String, Object> claims = JwtUtil.parseToken(token);
             if (claims.get("refreshToken") != null && claims.get("refreshToken").equals(true)) {
                 //不允许使用refreshToken进行业务请求
-                throw new RuntimeException("认证失败：非法的refreshToken用途！");
+                throw new RuntimeException("认证失败: 非法的refreshToken用途！");
             }
             //解析完成后把业务数据存储到ThreadLocal中
             ThreadLocalUtil.set(claims);
@@ -45,7 +46,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         } catch (Exception e) {
             //设置http响应状态码为401 Unauthorized
             response.setStatus(401);
-            System.out.println("LoninIntercpter:" + e.getMessage());
+            StaticLog.warn("[401]{}", e.getMessage());
             return false;
         }
     }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chq.hms.mapper.SysRoleMapper">
+
+    <resultMap id="jsonResultMap" type="com.chq.hms.domain.SysRole">
+        <result property="permission" column="permission" javaType="java.util.List" typeHandler="com.chq.hms.interceptor.JsonStringTypeHandler"/>
+    </resultMap>
+    <select id="listAllSysRoles" resultMap="jsonResultMap">
+        SELECT * FROM sys_role
+    </select>
+
+</mapper>

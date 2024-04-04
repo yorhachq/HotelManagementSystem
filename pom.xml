@@ -68,6 +68,13 @@
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>3.17.4</version>
+            <!--为避免与本项目其他依赖的内部依赖的日志框架产生冲突，排除该commons-logging依赖-->
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--JAXB相关依赖（阿里云SDK需要）-->
         <dependency>
@@ -95,7 +102,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.26</version>
+            <version>5.8.27</version>
         </dependency>
         <!--邮件服务-->
         <dependency>
@@ -103,6 +110,7 @@
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
+
     </dependencies>
 
     <build>

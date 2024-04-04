@@ -1,8 +1,8 @@
 package com.chq.hms.service.impl;
 
 import com.chq.hms.mapper.SysUserMapper;
-import com.chq.hms.pojo.SysRole;
-import com.chq.hms.pojo.SysUser;
+import com.chq.hms.domain.SysRole;
+import com.chq.hms.domain.SysUser;
 import com.chq.hms.service.SysUserService;
 import com.chq.hms.util.Md5Util;
 import com.chq.hms.util.ThreadLocalUtil;

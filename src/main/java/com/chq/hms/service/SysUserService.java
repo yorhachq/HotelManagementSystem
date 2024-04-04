@@ -1,7 +1,7 @@
 package com.chq.hms.service;
 
-import com.chq.hms.pojo.SysRole;
-import com.chq.hms.pojo.SysUser;
+import com.chq.hms.domain.SysRole;
+import com.chq.hms.domain.SysUser;
 
 public interface SysUserService {
 

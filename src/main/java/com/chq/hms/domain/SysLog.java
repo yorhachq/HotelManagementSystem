@@ -1,4 +1,4 @@
-package com.chq.hms.pojo;
+package com.chq.hms.domain;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

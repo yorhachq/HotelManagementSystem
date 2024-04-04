@@ -1,4 +1,4 @@
-package com.chq.hms.pojo;
+package com.chq.hms.domain;
 
 import com.chq.hms.anno.AvailableStatus;
 import jakarta.validation.constraints.NotNull;

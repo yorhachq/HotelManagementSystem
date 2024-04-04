@@ -1,7 +1,7 @@
 package com.chq.hms.mapper;
 
-import com.chq.hms.pojo.SysRole;
-import com.chq.hms.pojo.SysUser;
+import com.chq.hms.domain.SysRole;
+import com.chq.hms.domain.SysUser;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
