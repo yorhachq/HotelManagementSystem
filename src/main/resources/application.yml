@@ -44,3 +44,6 @@ aliyun:
     # bucket内的路径
     objectPath: elysian-nest/
 
+env:
+  frontend:
+    ui-url: http://localhost:3200

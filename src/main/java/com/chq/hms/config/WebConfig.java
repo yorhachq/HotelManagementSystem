@@ -17,8 +17,9 @@ public class WebConfig implements WebMvcConfigurer {
     //注册拦截器使其生效，这样每次请求都需要在请求头携带有效token才能通过
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //拦截白名单
+        //添加拦截器
         registry.addInterceptor(loginInterceptor)
+                //拦截白名单
                 .excludePathPatterns(
                         "/sysUser/login",
                         "/sysUser/register",
@@ -27,5 +28,6 @@ public class WebConfig implements WebMvcConfigurer {
                         "/sysUser/logout",
                         "/get-async-routes"
                 );
+
     }
 }

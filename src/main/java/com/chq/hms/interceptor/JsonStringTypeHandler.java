@@ -10,6 +10,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * JSON类型拦截器，将JSON字符串反序列化为Java对象
+ * @param <T>
+ */
 public class JsonStringTypeHandler<T> implements TypeHandler<T> {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();

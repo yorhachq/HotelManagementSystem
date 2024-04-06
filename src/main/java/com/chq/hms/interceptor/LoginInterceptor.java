@@ -12,6 +12,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Map;
 
+/**
+ * 登录拦截器
+ */
 @SuppressWarnings("all")
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
@@ -40,6 +43,8 @@ public class LoginInterceptor implements HandlerInterceptor {
                 //不允许使用refreshToken进行业务请求
                 throw new RuntimeException("认证失败: 非法的refreshToken用途！");
             }
+            request.setAttribute("role", claims.get("role"));
+            StaticLog.info("[LoginInterceptor]:ROLE:{}", claims);
             //解析完成后把业务数据存储到ThreadLocal中
             ThreadLocalUtil.set(claims);
             return true;

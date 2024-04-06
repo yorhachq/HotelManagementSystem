@@ -60,12 +60,17 @@ public class SysUserController {
         if (loginUser == null) {
             //用户不存在
             return Result.error("不存在用户名为" + username + "的用户!");
+        } else if (!loginUser.getStatus().equals("正常")) {
+            return Result.error("账户状态异常，拒绝操作!");
         }
         if (Md5Util.checkPassword(password, loginUser.getPassword())) {
             //登录成功，使用用户信息生成token
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", loginUser.getUserId());
             claims.put("username", loginUser.getUsername());
+            //角色代码也存一份在token里，方便后续处理
+            SysRole userRole = userService.findRoleById(loginUser.getRoleId());
+            claims.put("role", userRole.getRoleCode());
             // 访问用token
             String accessToken = JwtUtil.genToken(claims, 12);
             // 刷新用token，添加自定义的claim来标识其用途
