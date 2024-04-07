@@ -1,11 +1,14 @@
 package com.chq.hms.interceptor;
 
+import cn.hutool.json.JSONUtil;
 import cn.hutool.log.StaticLog;
+import com.chq.hms.domain.Result;
 import com.chq.hms.util.JwtUtil;
 import com.chq.hms.util.ThreadLocalUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,6 +23,10 @@ import java.util.Map;
 public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    private static final String FLAG = "Redirect:";
+
+    @Value("${env.frontend.ui-url}")
+    private String GUEST_REDIRECTING_URL;
 
     /**
      * preHandle:请求到达接口前执行
@@ -31,7 +38,9 @@ public class LoginInterceptor implements HandlerInterceptor {
         //获取来自浏览器请求头的token，进行令牌验证
         String token = request.getHeader("Authorization");
         // 前端指定了token标准前缀，进行对应处理
-        token = token.replace("Bearer ", "");
+        if (token != null) {
+            token = token.replace("Bearer ", "");
+        }
 
         //验证token
         try {
@@ -45,6 +54,23 @@ public class LoginInterceptor implements HandlerInterceptor {
                 //不允许使用refreshToken进行业务请求
                 throw new RuntimeException("认证失败: 非法的refreshToken用途！");
             }
+
+            // 解析当前请求用户的 role 信息
+            String role = claims.get("role").toString();
+            // 对于 guest 角色，返回带有重定向标志的拦截结果
+            if ("guest".equals(role)) {
+                // 创建带有重定向标志的错误结果
+                Result redirectResult = Result.error(FLAG + GUEST_REDIRECTING_URL);
+                // 将错误结果序列化为JSON字符串
+                String jsonRedirectResult = JSONUtil.parseObj(redirectResult).toString();
+                // 设置响应内容类型为application/json
+                response.setContentType("application/json;charset=UTF-8");
+                // 输出错误结果到响应体
+                response.getWriter().write(jsonRedirectResult);
+                StaticLog.info("[304]Redirecting: {}", GUEST_REDIRECTING_URL);
+                return false;
+            }
+
             //解析完成后把业务数据存储到ThreadLocal中
             ThreadLocalUtil.set(claims);
             response.setStatus(HttpServletResponse.SC_OK);
