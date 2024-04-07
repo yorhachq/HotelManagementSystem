@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 动态路由
+ * 供后台管理系统动态生成菜单
+ */
 @RestController
 @RequestMapping("/get-async-routes")
 @SuppressWarnings("rawtypes")

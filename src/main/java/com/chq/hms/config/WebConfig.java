@@ -25,8 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/sysUser/register",
                         "/sysUser/sendVerifyEmail",
                         "/sysUser/resetPwd",
-                        "/sysUser/logout",
-                        "/get-async-routes"
+                        "/sysUser/logout"
                 );
 
     }

@@ -30,6 +30,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //获取来自浏览器请求头的token，进行令牌验证
         String token = request.getHeader("Authorization");
+        // 前端指定了token标准前缀，进行对应处理
+        token = token.replace("Bearer ", "");
 
         //验证token
         try {
@@ -43,14 +45,13 @@ public class LoginInterceptor implements HandlerInterceptor {
                 //不允许使用refreshToken进行业务请求
                 throw new RuntimeException("认证失败: 非法的refreshToken用途！");
             }
-            request.setAttribute("role", claims.get("role"));
-            StaticLog.info("[LoginInterceptor]:ROLE:{}", claims);
             //解析完成后把业务数据存储到ThreadLocal中
             ThreadLocalUtil.set(claims);
+            response.setStatus(HttpServletResponse.SC_OK);
             return true;
         } catch (Exception e) {
             //设置http响应状态码为401 Unauthorized
-            response.setStatus(401);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             StaticLog.warn("[401]{}", e.getMessage());
             return false;
         }

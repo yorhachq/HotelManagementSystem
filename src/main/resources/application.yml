@@ -46,4 +46,5 @@ aliyun:
 
 env:
   frontend:
+    # 酒店前台用户界面地址
     ui-url: http://localhost:3200
