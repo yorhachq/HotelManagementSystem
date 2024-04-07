@@ -5,7 +5,7 @@
 <mapper namespace="com.chq.hms.mapper.DataStatisticsMapper">
 
     <!-- 查询当前这一周（自然周）的数据 -->
-    <select id="getThisWeekData" resultType="java.util.List">
+    <select id="getThisWeekData" resultType="java.util.Map">
         SELECT *
         FROM `data_statistics`
         WHERE YEARWEEK(`date`, 1) = YEARWEEK(CURDATE(), 1)
