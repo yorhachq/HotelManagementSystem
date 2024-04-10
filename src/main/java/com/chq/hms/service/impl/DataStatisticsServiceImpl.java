@@ -18,6 +18,11 @@ public class DataStatisticsServiceImpl implements DataStatisticsService {
     }
 
     @Override
+    public Map<String, Object> getYesterdayData() {
+        return dataStatisticsMapper.getYesterdayData();
+    }
+
+    @Override
     public List<Map<String, Object>> getThisWeekData() {
         return dataStatisticsMapper.getThisWeekData();
     }

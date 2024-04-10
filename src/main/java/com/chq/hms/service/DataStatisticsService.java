@@ -7,6 +7,8 @@ public interface DataStatisticsService {
     // 获取今日数据
     Map<String, Object> getTodayData();
 
+    // 获取昨日数据
+    Map<String, Object> getYesterdayData();
     // 获取本周数据
     List<Map<String, Object>> getThisWeekData();
 

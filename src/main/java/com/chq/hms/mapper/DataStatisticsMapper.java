@@ -13,6 +13,10 @@ public interface DataStatisticsMapper {
     @Select("SELECT * FROM `data_statistics` WHERE date = CURDATE() LIMIT 1;")
     Map<String, Object> getTodayData();
 
+    // 获取昨日数据
+    @Select("SELECT * FROM `data_statistics` WHERE date = DATE_SUB(CURDATE(), INTERVAL 1 DAY) LIMIT 1;")
+    Map<String, Object> getYesterdayData();
+
     // 获取本周数据(自然周)
     @MapKey("id")
     List<Map<String, Object>> getThisWeekData();
@@ -20,4 +24,5 @@ public interface DataStatisticsMapper {
     // 获取上周数据(自然周)
     @MapKey("id")
     List<Map<String, Object>> getLastWeekData();
+
 }
