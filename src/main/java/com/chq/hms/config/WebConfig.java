@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * 配置类
+ * Web配置类
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -25,7 +25,10 @@ public class WebConfig implements WebMvcConfigurer {
                         "/sysUser/register",
                         "/sysUser/sendVerifyEmail",
                         "/sysUser/resetPwd",
-                        "/sysUser/logout"
+                        "/sysUser/logout",
+                        "/get-async-routes",
+                        //这下面的是测试临时白名单，项目完成后需移除
+                        "/getip"
                 );
 
     }
