@@ -28,7 +28,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/sysUser/logout",
                         "/get-async-routes",
                         //这下面的是测试临时白名单，项目完成后需移除
-                        "/getip"
+                        "/ip/*",
+                        "/sysUser/weather"
                 );
 
     }

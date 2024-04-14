@@ -4,12 +4,12 @@ import com.chq.hms.domain.Result;
 import com.chq.hms.domain.SysRole;
 import com.chq.hms.domain.SysUser;
 import com.chq.hms.service.SysUserService;
-import com.chq.hms.util.EmailUtil;
-import com.chq.hms.util.JwtUtil;
-import com.chq.hms.util.Md5Util;
-import com.chq.hms.util.ThreadLocalUtil;
+import com.chq.hms.util.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import net.dreamlu.mica.ip2region.core.Ip2regionSearcher;
+import net.dreamlu.mica.ip2region.core.IpInfo;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.chq.hms.util.WeatherUtil.weatherInfo;
+
 @RestController
 @RequestMapping("/sysUser")
 @Validated //SpringValidation结合形参上的@Pattern注解进行参数校验
@@ -34,7 +36,9 @@ public class SysUserController {
     @SuppressWarnings("all")
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-
+    @SuppressWarnings("all")
+    @Autowired
+    private Ip2regionSearcher ip2regionSearcher;
     private static String verifyCode = "";
 
     //用户注册
@@ -237,6 +241,27 @@ public class SysUserController {
         data.put("refreshToken", refreshToken);
         data.put("expires", expires);
         return Result.success(data);
+    }
+
+    // 加载天气信息
+    @GetMapping("/weather")
+    public Result getWeather(HttpServletRequest request) {
+        IpInfo ipInfo = ip2regionSearcher.memorySearch(IpAddrUtil.getIpAddr(request));
+        if (ipInfo == null) return Result.error("IP获取失败!");
+        Map<String, String> weatherInfo;
+        // 使用了JSONUtil.parse(),将JSON字符串直接解析为JSON对象,避免在将JSON字符串作为数据传输时进行不必要的转义
+        if (ipInfo.getRegion() != null) {
+            weatherInfo = weatherInfo(ipInfo.getRegion());
+        } else if (ipInfo.getCity() != null) {
+            weatherInfo = weatherInfo(ipInfo.getCity());
+        } else if (ipInfo.getProvince() != null) {
+            weatherInfo = weatherInfo(ipInfo.getProvince());
+        } else if (ipInfo.getCountry() != null) {
+            weatherInfo = weatherInfo(ipInfo.getCountry());
+        } else {
+            return Result.error("获取天气信息失败!");
+        }
+        return Result.success(weatherInfo);
     }
 
     // 用户登出(销毁Redis中的token记录)

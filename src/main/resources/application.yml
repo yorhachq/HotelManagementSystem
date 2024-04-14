@@ -47,4 +47,11 @@ aliyun:
 env:
   frontend:
     # 酒店前台用户界面地址
-    ui-url: http://localhost:3200
+    ui-url: http://elysianclient.chqcloud.top/
+#    ui-url: http://localhost:3200
+  qweather:
+    # qweather api address
+    geo-api: https://geoapi.qweather.com/
+    dev-api: https://devapi.qweather.com/
+    # api key
+    api-key: 77a3d3d797cb4bf0878b27176f43b1f5
