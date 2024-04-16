@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chq.hms.mapper.HotelRoomMapper">
+
+    <resultMap id="BaseResultMap" type="com.chq.hms.domain.HotelRoom">
+        <id column="room_id" property="roomId"/>
+        <result column="room_number" property="roomNumber"/>
+        <result column="floor_number" property="floorNumber"/>
+        <result column="room_type_id" property="roomTypeId"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insertHotelRoom" parameterType="com.chq.hms.domain.HotelRoom">
+        INSERT INTO hotel_room (room_number, floor_number, room_type_id, status, create_time, update_time)
+        VALUES (#{roomNumber}, #{floorNumber}, #{roomTypeId}, #{status}, now(), now())
+    </insert>
+
+    <update id="updateHotelRoom" parameterType="com.chq.hms.domain.HotelRoom">
+        UPDATE hotel_room
+        SET room_number  = #{roomNumber},
+            floor_number = #{floorNumber},
+            room_type_id = #{roomTypeId},
+            status       = #{status},
+            update_time  = now()
+        WHERE room_id = #{roomId}
+    </update>
+
+    <select id="selectHotelRoomById" resultMap="BaseResultMap">
+        SELECT *
+        FROM hotel_room
+        WHERE room_id = #{roomId}
+    </select>
+
+    <select id="selectAllHotelRooms" resultMap="BaseResultMap">
+        SELECT *
+        FROM hotel_room
+        WHERE status != '冻结'
+    </select>
+
+</mapper>

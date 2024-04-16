@@ -91,6 +91,7 @@ public class SysUserController {
             Map<String, Object> data = new LinkedHashMap<>();
             data.put("username", username);
             data.put("roles", roles);
+            data.put("avatar", loginUser.getAvatar());
             data.put("accessToken", accessToken);
             data.put("refreshToken", refreshToken);
             data.put("expires", expires);

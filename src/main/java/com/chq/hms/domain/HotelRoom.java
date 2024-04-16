@@ -25,7 +25,7 @@ public class HotelRoom {
     private Integer roomTypeId;
     // 房间状态(空闲,已预订,已入住,冻结)
     @RoomStatus
-    private Integer status;
+    private String status;
 
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
