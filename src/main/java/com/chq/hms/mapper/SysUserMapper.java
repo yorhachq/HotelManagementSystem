@@ -19,8 +19,6 @@ public interface SysUserMapper {
     void add(String username, String password);
 
     //更新用户基本信息
-    @Update("UPDATE sys_user SET gender=#{gender},email=#{email},phone=#{phone},role_id=#{roleId},status=#{status}," +
-            "update_time=#{updateTime} WHERE user_id=#{id}")
     void update(SysUser user);
 
     //更新用户头像

@@ -34,6 +34,9 @@ public class SysUserServiceImpl implements SysUserService {
     public void update(SysUser user) {
         //将更新时间设为系统当前时间
         user.setUpdateTime(LocalDateTime.now());
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+        user.setUserId(id);
         userMapper.update(user);
     }
 

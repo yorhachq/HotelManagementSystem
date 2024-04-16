@@ -6,11 +6,9 @@ import com.chq.hms.domain.SysUser;
 import com.chq.hms.service.SysUserService;
 import com.chq.hms.util.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import net.dreamlu.mica.ip2region.core.Ip2regionSearcher;
 import net.dreamlu.mica.ip2region.core.IpInfo;
-import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -116,6 +114,12 @@ public class SysUserController {
     public Result update(@RequestBody @Validated SysUser user) {
         //校验浏览器请求中的用户id是否与当前用户ThreadLocal中的id一致
         if (user.getUserId().equals(((Map) ThreadLocalUtil.get()).get("id"))) {
+            //修正前端数据
+            if (user.getGender().equals("男")) {
+                user.setGender("male");
+            } else if (user.getGender().equals("女")) {
+                user.setGender("female");
+            }
             userService.update(user);
             return Result.success();
         }
@@ -125,10 +129,16 @@ public class SysUserController {
     /**
      * 更新用户头像
      *
-     * @param avatarUrl @URL对参数进行校验，确保是一个合法的URL地址
+     * @param params string
      */
-    @PatchMapping("/updateAvatar")
-    public Result updateAvatar(@RequestParam @URL @NotEmpty String avatarUrl) {
+//    @PatchMapping("/updateAvatar")
+//    public Result updateAvatar(@RequestParam("avatarUrl") @URL @NotEmpty String avatarUrl) {
+//        userService.updateAvatar(avatarUrl);
+//        return Result.success();
+//    }
+    @PostMapping("/updateAvatar")
+    public Result updateAvatar(@RequestBody Map<String, String> params) {
+        String avatarUrl = params.get("avatar");
         userService.updateAvatar(avatarUrl);
         return Result.success();
     }
@@ -137,10 +147,9 @@ public class SysUserController {
     @PatchMapping("/updatePwd")
     public Result updatePwd(@RequestBody Map<String, String> params, @RequestHeader("Authorization") String token) {
         //参数校验
-        String oldPwd = params.get("old_pwd");
-        String newPwd = params.get("new_pwd");
-        String rePwd = params.get("re_pwd");
-        if (!(StringUtils.hasLength(oldPwd) && StringUtils.hasLength(newPwd) && StringUtils.hasLength(rePwd))) {
+        String oldPwd = params.get("oldPwd");
+        String newPwd = params.get("newPwd");
+        if (!(StringUtils.hasLength(oldPwd) && StringUtils.hasLength(newPwd))) {
             return Result.error("确少必要的参数!");
         }
         Map<String, Object> map = ThreadLocalUtil.get();
@@ -154,9 +163,6 @@ public class SysUserController {
         }
         if (oldPwd.equals(newPwd)) {
             return Result.error("新密码不能与原密码相同!");
-        }
-        if (!rePwd.equals(newPwd)) {
-            return Result.error("确认密码与新密码不一致!");
         }
         //完成密码更新
         userService.updatePwd(newPwd);
