@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chq.hms.mapper.HotelMemberMapper">
+
+    <resultMap id="BaseResultMap" type="com.chq.hms.domain.HotelMember">
+        <id column="member_id" property="memberId"/>
+        <result column="user_id" property="userId"/>
+        <result column="member_level" property="memberLevel"/>
+        <result column="member_points" property="memberPoints"/>
+        <result column="balance" property="balance"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insertHotelMember" parameterType="com.chq.hms.domain.HotelMember">
+        INSERT INTO hotel_member (user_id, member_level, member_points, balance, create_time, update_time)
+        VALUES (#{userId}, #{memberLevel}, #{memberPoints}, #{balance}, NOW(), NOW())
+    </insert>
+
+    <update id="updateHotelMember" parameterType="com.chq.hms.domain.HotelMember">
+        UPDATE hotel_member
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="memberLevel != null">
+                member_level = #{memberLevel},
+            </if>
+            <if test="memberPoints != null">
+                member_points = #{memberPoints},
+            </if>
+            <if test="balance != null">
+                balance = #{balance},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE member_id = #{memberId}
+    </update>
+
+    <select id="selectHotelMemberById" resultMap="BaseResultMap">
+        SELECT *
+        FROM hotel_member
+        WHERE member_id = #{memberId}
+    </select>
+
+    <select id="selectHotelMemberByUserId" resultMap="BaseResultMap">
+        SELECT *
+        FROM hotel_member
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectHotelMembers" resultMap="BaseResultMap">
+        SELECT *
+        FROM hotel_member
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="memberLevel != null and memberLevel != ''">
+                AND member_level = #{memberLevel}
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -19,6 +19,8 @@ public class HotelOrder {
     private Integer userId;
     // 订单对应的房间ID
     private Integer roomId;
+    // 房间号（非实体字段，仅用于前端数据返回）
+    private Integer roomNumber;
     // 订单号(时间相关+生成规则)
     private String orderNum;
     // 预定日期

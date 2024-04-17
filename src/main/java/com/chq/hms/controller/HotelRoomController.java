@@ -65,8 +65,8 @@ public class HotelRoomController {
      * @param status      房间状态(可选)
      * @param pageNum     页码(可选,默认为1)
      * @param pageSize    每页条数(可选,默认为10)
-     * @param orderBy     排序字段(可选,默认为create_time)
-     * @param orderType   排序方式(可选,默认为desc)
+     * @param orderBy     排序字段(可选,默认为room_id)
+     * @param orderType   排序方式(可选,默认为asc)
      * @return 酒店房间列表
      */
     @GetMapping
@@ -82,7 +82,6 @@ public class HotelRoomController {
         PageBean<HotelRoom> pageInfo = hotelRoomService.getHotelRooms(roomNumber, floorNumber, roomTypeId, status, pageNum, pageSize, orderBy, orderType);
         // 遍历Bean里的roomTypeId，查询roomTypeName，并重新替换封装
         pageInfo.getItems().forEach(hotelRoom -> hotelRoom.setRoomTypeName(hotelRoomTypeService.getHotelRoomTypeById(hotelRoom.getRoomTypeId()).getTypeName()));
-
         return Result.success(pageInfo);
     }
 }

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chq.hms.mapper.HotelOrderMapper">
+
+    <resultMap id="HotelOrderVOResultMap" type="com.chq.hms.domain.HotelOrder">
+        <id column="order_id" property="orderId"/>
+        <result column="user_id" property="userId"/>
+        <result column="room_id" property="roomId"/>
+        <result column="room_number" property="roomNumber"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="reserve_date" property="reserveDate"/>
+        <result column="checkin_date" property="checkinDate"/>
+        <result column="checkout_date" property="checkoutDate"/>
+        <result column="status" property="status"/>
+        <result column="payment" property="payment"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insertHotelOrder" parameterType="com.chq.hms.domain.HotelOrder">
+        INSERT INTO hotel_order (user_id, room_id, order_num, reserve_date, checkin_date, checkout_date, status,
+                                 payment, create_time, update_time)
+        VALUES (#{userId}, #{roomId}, #{orderNum}, NOW(), #{checkinDate}, #{checkoutDate}, #{status},
+                #{payment}, NOW(), NOW())
+    </insert>
+
+    <update id="updateHotelOrder" parameterType="com.chq.hms.domain.HotelOrder">
+        UPDATE hotel_order
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="roomId != null">
+                room_id = #{roomId},
+            </if>
+            <if test="orderNum != null">
+                order_num = #{orderNum},
+            </if>
+            <if test="reserveDate != null">
+                reserve_date = #{reserveDate},
+            </if>
+            <if test="checkinDate != null">
+                checkin_date = #{checkinDate},
+            </if>
+            <if test="checkoutDate != null">
+                checkout_date = #{checkoutDate},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="payment != null">
+                payment = #{payment},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE order_id = #{orderId}
+    </update>
+
+    <select id="selectHotelOrderById" resultMap="HotelOrderVOResultMap">
+        SELECT o.order_id,
+               o.user_id,
+               o.room_id,
+               r.room_number,
+               o.order_num,
+               o.reserve_date,
+               o.checkin_date,
+               o.checkout_date,
+               o.status,
+               o.payment,
+               o.create_time,
+               o.update_time
+        FROM hotel_order o
+                 LEFT JOIN hotel_room r ON o.room_id = r.room_id
+        WHERE o.order_id = #{orderId}
+    </select>
+
+    <select id="selectHotelOrders" resultMap="HotelOrderVOResultMap">
+        SELECT
+        o.order_id, o.user_id, o.room_id, r.room_number, o.order_num, o.reserve_date,
+        o.checkin_date, o.checkout_date, o.status, o.payment, o.create_time, o.update_time
+        FROM hotel_order o
+        LEFT JOIN hotel_room r ON o.room_id = r.room_id
+        <where>
+            <if test="userId != null">
+                AND o.user_id = #{userId}
+            </if>
+            <if test="roomId != null">
+                AND o.room_id = #{roomId}
+            </if>
+            <if test="orderNum != null and orderNum != ''">
+                AND o.order_num LIKE CONCAT('%', #{orderNum}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND o.status = #{status}
+            </if>
+            <if test="reserveDate != null">
+                AND o.reserve_date = #{reserveDate}
+            </if>
+            <if test="checkoutDate != null">
+                AND o.checkout_date = #{checkoutDate}
+            </if>
+        </where>
+    </select>
+
+</mapper>
+
