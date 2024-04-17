@@ -4,6 +4,7 @@ import com.chq.hms.domain.HotelRoomType;
 import com.chq.hms.domain.vo.PageBean;
 
 public interface HotelRoomTypeService {
+    HotelRoomType getHotelRoomTypeById(Integer roomTypeId);
 
     void addHotelRoomType(HotelRoomType hotelRoomType);
 

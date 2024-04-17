@@ -18,6 +18,11 @@ public class HotelRoomTypeServiceImpl implements HotelRoomTypeService {
     private HotelRoomTypeMapper hotelRoomTypeMapper;
 
     @Override
+    public HotelRoomType getHotelRoomTypeById(Integer roomTypeId) {
+        return hotelRoomTypeMapper.selectHotelRoomTypeById(roomTypeId);
+    }
+
+    @Override
     public void addHotelRoomType(HotelRoomType hotelRoomType) {
         hotelRoomType.setStatus("正常");
         hotelRoomTypeMapper.insertHotelRoomType(hotelRoomType);

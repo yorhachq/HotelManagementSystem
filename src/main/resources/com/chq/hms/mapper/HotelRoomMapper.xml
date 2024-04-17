@@ -14,16 +14,26 @@
 
     <insert id="insertHotelRoom" parameterType="com.chq.hms.domain.HotelRoom">
         INSERT INTO hotel_room (room_number, floor_number, room_type_id, status, create_time, update_time)
-        VALUES (#{roomNumber}, #{floorNumber}, #{roomTypeId}, #{status}, now(), now())
+        VALUES (#{roomNumber}, #{floorNumber}, #{roomTypeId}, #{status}, NOW(), NOW())
     </insert>
 
     <update id="updateHotelRoom" parameterType="com.chq.hms.domain.HotelRoom">
         UPDATE hotel_room
-        SET room_number  = #{roomNumber},
-            floor_number = #{floorNumber},
-            room_type_id = #{roomTypeId},
-            status       = #{status},
-            update_time  = now()
+        <set>
+            <if test="roomNumber != null">
+                room_number = #{roomNumber},
+            </if>
+            <if test="floorNumber != null">
+                floor_number = #{floorNumber},
+            </if>
+            <if test="roomTypeId != null">
+                room_type_id = #{roomTypeId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            update_time = NOW()
+        </set>
         WHERE room_id = #{roomId}
     </update>
 
@@ -33,10 +43,22 @@
         WHERE room_id = #{roomId}
     </select>
 
-    <select id="selectAllHotelRooms" resultMap="BaseResultMap">
+    <select id="selectHotelRooms" resultMap="BaseResultMap">
         SELECT *
         FROM hotel_room
         WHERE status != '冻结'
+        <if test="roomNumber != null">
+            AND room_number = #{roomNumber}
+        </if>
+        <if test="floorNumber != null">
+            AND floor_number = #{floorNumber}
+        </if>
+        <if test="roomTypeId != null">
+            AND room_type_id = #{roomTypeId}
+        </if>
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
     </select>
 
 </mapper>

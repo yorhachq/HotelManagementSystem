@@ -1,11 +1,11 @@
 package com.chq.hms.validation;
 
-import com.chq.hms.anno.AvailableStatus;
+import com.chq.hms.anno.RoomStatus;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 //ConstraintValidator<给哪个注解提供校验规则,校验的数据类型>
-public class RoomStatusValidation implements ConstraintValidator<AvailableStatus, String> {
+public class RoomStatusValidation implements ConstraintValidator<RoomStatus, String> {
     /**
      * @param value                      将来要校验的数据
      * @param constraintValidatorContext context in which the constraint is evaluated

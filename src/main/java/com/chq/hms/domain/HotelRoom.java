@@ -23,6 +23,8 @@ public class HotelRoom {
     // 房间类型ID(实际的房间类型名字段是typeName)
     @NotNull
     private Integer roomTypeId;
+    // 房间类型名称(非实体字段，仅用于数据返回)
+    private String roomTypeName;
     // 房间状态(空闲,已预订,已入住,冻结)
     @RoomStatus
     private String status;

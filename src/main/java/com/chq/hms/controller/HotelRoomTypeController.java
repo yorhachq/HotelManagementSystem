@@ -10,22 +10,40 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/hotelRoomType")
 public class HotelRoomTypeController {
-
+    @SuppressWarnings("all")
     @Autowired
     private HotelRoomTypeService hotelRoomTypeService;
 
+    /**
+     * 添加酒店房间类型
+     *
+     * @param hotelRoomType 房间类型
+     * @return result
+     */
     @PostMapping
     public Result<Void> addHotelRoomType(@RequestBody HotelRoomType hotelRoomType) {
         hotelRoomTypeService.addHotelRoomType(hotelRoomType);
         return Result.success();
     }
 
+    /**
+     * 修改酒店房间类型
+     *
+     * @param hotelRoomType 房间类型
+     * @return result
+     */
     @PutMapping
     public Result<Void> updateHotelRoomType(@RequestBody HotelRoomType hotelRoomType) {
         hotelRoomTypeService.updateHotelRoomType(hotelRoomType);
         return Result.success();
     }
 
+    /**
+     * 删除酒店房间类型
+     *
+     * @param roomTypeId 房间类型id
+     * @return result
+     */
     @DeleteMapping("/{roomTypeId}")
     public Result<Void> deleteHotelRoomType(@PathVariable Integer roomTypeId) {
         hotelRoomTypeService.deleteHotelRoomType(roomTypeId);
