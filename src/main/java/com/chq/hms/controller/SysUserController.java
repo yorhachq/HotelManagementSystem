@@ -61,7 +61,7 @@ public class SysUserController {
         SysUser loginUser = userService.findByUserName(username);
         if (loginUser == null) {
             //用户不存在
-            return Result.error("不存在用户名为" + username + "的用户!");
+            return Result.error("不存在用户名为[" + username + "]的用户!");
         } else if (!loginUser.getStatus().equals("正常")) {
             return Result.error("账户状态异常，拒绝操作!");
         }
