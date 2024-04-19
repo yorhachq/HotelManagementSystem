@@ -18,7 +18,7 @@ public class HotelMember{
     @NotNull
     private Integer userId;
     // 会员等级
-    private Integer memberLevel;
+    private String memberLevel;
     // 会员积分
     private Integer memberPoints;
     // 会员账户余额

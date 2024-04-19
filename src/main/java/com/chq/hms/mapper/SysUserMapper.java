@@ -32,4 +32,23 @@ public interface SysUserMapper {
     //根据角色id查询角色
     @Select("SELECT * FROM sys_role WHERE role_id=#{roleId}")
     SysRole findRoleById(Integer roleId);
+
+    /**
+     * 插入系统用户
+     * @param sysUser 系统用户信息
+     */
+    void insertSysUser(SysUser sysUser);
+
+    /**
+     * 更新系统用户
+     * @param sysUser 系统用户信息
+     */
+    void updateSysUser(SysUser sysUser);
+
+    /**
+     * 根据ID查询系统用户
+     * @param userId 用户ID
+     * @return 系统用户信息
+     */
+    SysUser selectSysUserById(Integer userId);
 }

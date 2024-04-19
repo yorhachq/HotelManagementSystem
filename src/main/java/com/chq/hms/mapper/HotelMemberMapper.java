@@ -1,6 +1,7 @@
 package com.chq.hms.mapper;
 
 import com.chq.hms.domain.HotelMember;
+import com.chq.hms.domain.vo.HotelMemberVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -39,11 +40,20 @@ public interface HotelMemberMapper {
     HotelMember selectHotelMemberByUserId(Integer userId);
 
     /**
+     * 根据用户名查询酒店会员
+     * @param username 用户名
+     * @return 酒店会员信息
+     */
+    HotelMember selectMemberByUsername(String username);
+
+    /**
      * 查询酒店会员列表
-     * @param userId 用户ID(可选)
+     * @param username 用户名(可选)
+     * @param phone 手机号(可选)
      * @param memberLevel 会员等级(可选)
      * @return 酒店会员列表
      */
-    List<HotelMember> selectHotelMembers(@Param("userId") Integer userId,
-                                         @Param("memberLevel") String memberLevel);
+    List<HotelMemberVO> selectMemberVOs(@Param("username") String username,
+                                        @Param("phone") String phone,
+                                        @Param("memberLevel") String memberLevel);
 }

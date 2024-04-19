@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chq.hms.mapper.HotelMemberMapper">
-
     <resultMap id="BaseResultMap" type="com.chq.hms.domain.HotelMember">
         <id column="member_id" property="memberId"/>
         <result column="user_id" property="userId"/>
@@ -12,6 +11,12 @@
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
+    <resultMap id="MemberVOResultMap" type="com.chq.hms.domain.vo.HotelMemberVO" extends="BaseResultMap">
+        <result column="username" property="username"/>
+        <result column="gender" property="gender"/>
+        <result column="phone" property="phone"/>
+    </resultMap>
+
     <insert id="insertHotelMember" parameterType="com.chq.hms.domain.HotelMember">
         INSERT INTO hotel_member (user_id, member_level, member_points, balance, create_time, update_time)
         VALUES (#{userId}, #{memberLevel}, #{memberPoints}, #{balance}, NOW(), NOW())
@@ -20,9 +25,6 @@
     <update id="updateHotelMember" parameterType="com.chq.hms.domain.HotelMember">
         UPDATE hotel_member
         <set>
-            <if test="userId != null">
-                user_id = #{userId},
-            </if>
             <if test="memberLevel != null">
                 member_level = #{memberLevel},
             </if>
@@ -44,22 +46,42 @@
     </select>
 
     <select id="selectHotelMemberByUserId" resultMap="BaseResultMap">
-        SELECT *
-        FROM hotel_member
-        WHERE user_id = #{userId}
+        SELECT * FROM hotel_member WHERE user_id = #{userId}
     </select>
 
-    <select id="selectHotelMembers" resultMap="BaseResultMap">
-        SELECT *
-        FROM hotel_member
+
+    <select id="selectMemberByUsername" resultMap="BaseResultMap">
+        SELECT m.member_id,
+               m.user_id,
+               m.member_level,
+               m.member_points,
+               m.balance,
+               m.create_time,
+               m.update_time
+        FROM hotel_member m
+                 LEFT JOIN sys_user u ON m.user_id = u.user_id
+        WHERE u.username = #{username}
+    </select>
+
+
+    <select id="selectMemberVOs" resultMap="MemberVOResultMap">
+        SELECT
+        m.member_id, m.user_id, m.member_level, m.member_points, m.balance,
+        u.username, u.gender, u.phone,
+        m.create_time, m.update_time
+        FROM hotel_member m
+        LEFT JOIN sys_user u ON m.user_id = u.user_id
         <where>
-            <if test="userId != null">
-                AND user_id = #{userId}
+            u.status != '冻结'
+            <if test="username != null and username != ''">
+                AND u.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND u.phone LIKE CONCAT('%', #{phone}, '%')
             </if>
             <if test="memberLevel != null and memberLevel != ''">
-                AND member_level = #{memberLevel}
+                AND m.member_level = #{memberLevel}
             </if>
         </where>
     </select>
-
 </mapper>

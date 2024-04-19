@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chq.hms.mapper.HotelRechargeRecordMapper">
+    <resultMap id="BaseResultMap" type="com.chq.hms.domain.HotelRechargeRecord">
+        <id column="recharge_id" property="rechargeId"/>
+        <result column="member_id" property="memberId"/>
+        <result column="amount" property="amount"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <insert id="insertHotelRechargeRecord" parameterType="com.chq.hms.domain.HotelRechargeRecord">
+        INSERT INTO hotel_recharge_record (member_id, amount, payment_method, create_time)
+        VALUES (#{memberId}, #{amount}, #{paymentMethod}, NOW())
+    </insert>
+</mapper>
