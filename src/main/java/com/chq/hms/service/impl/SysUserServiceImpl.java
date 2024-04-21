@@ -23,6 +23,12 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    public SysUser findByUserId(String idstr) {
+        Integer userId = Integer.parseInt(idstr);
+        return userMapper.findByUserId(userId);
+    }
+
+    @Override
     public void register(String username, String password) {
         //MD5加密
         String md5String = Md5Util.getMD5String(password);

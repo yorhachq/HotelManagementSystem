@@ -13,6 +13,10 @@ public interface SysUserMapper {
     @Select("SELECT * FROM sys_user WHERE username=#{username}")
     SysUser findByUserName(String username);
 
+    //根据用户id查询用户
+    @Select("SELECT * FROM sys_user WHERE user_id=#{id}")
+    SysUser findByUserId(Integer userId);
+
     //添加用户(username、password、create_time、create_time字段非空)
     @Insert("INSERT INTO sys_user(username, password, create_time, update_time)" +
             " VALUES(#{username},#{password},NOW(),NOW())")
@@ -51,4 +55,5 @@ public interface SysUserMapper {
      * @return 系统用户信息
      */
     SysUser selectSysUserById(Integer userId);
+
 }

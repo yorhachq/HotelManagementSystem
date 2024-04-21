@@ -8,6 +8,9 @@ public interface SysUserService {
     //根据用户名查询用户
     SysUser findByUserName(String username);
 
+    //根据ID查询用户
+    SysUser findByUserId(String username);
+
     //注册
     void register(String username, String password);
 

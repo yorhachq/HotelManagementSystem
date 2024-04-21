@@ -61,4 +61,12 @@
             OR description LIKE concat('%', #{keyword}, '%'))
         </if>
     </select>
+
+    <select id="selectBatchIds" resultMap="BaseResultMap">
+        SELECT * FROM hotel_room_type WHERE room_type_id IN
+        <foreach item="item" index="index" collection="roomTypeIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
 </mapper>

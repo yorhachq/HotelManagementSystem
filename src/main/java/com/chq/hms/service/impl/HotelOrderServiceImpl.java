@@ -1,10 +1,16 @@
 package com.chq.hms.service.impl;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.log.StaticLog;
 import com.chq.hms.domain.HotelMember;
 import com.chq.hms.domain.HotelOrder;
 import com.chq.hms.domain.HotelRoom;
 import com.chq.hms.domain.HotelRoomType;
+import com.chq.hms.domain.vo.CheckinVO;
+import com.chq.hms.domain.vo.HotelOrderVO;
 import com.chq.hms.domain.vo.PageBean;
 import com.chq.hms.mapper.HotelMemberMapper;
 import com.chq.hms.mapper.HotelOrderMapper;
@@ -47,10 +53,19 @@ public class HotelOrderServiceImpl implements HotelOrderService {
     @Override
     @Transactional
     public void reserveHotelRoom(HotelOrder hotelOrder) {
+        long days;
+        Double payment;
         // 查询房间信息,获取房型价格
         HotelRoom hotelRoom = hotelRoomMapper.selectHotelRoomById(hotelOrder.getRoomId());
         HotelRoomType hotelRoomType = hotelRoomTypeMapper.selectHotelRoomTypeById(hotelRoom.getRoomTypeId());
-        Double payment = hotelRoomType.getPrice();
+        try {
+            // 计算入住天数并得出支付金额
+            days = DateUtil.between(Convert.toDate(hotelOrder.getCheckinDate()), Convert.toDate(hotelOrder.getCheckoutDate()), DateUnit.DAY);
+            payment = hotelRoomType.getPrice() * days;
+        } catch (RuntimeException e) {
+            StaticLog.error(e);
+            throw new RuntimeException("请提供入住日期和退房日期");
+        }
         // 查询会员账户余额
         HotelMember hotelMember = hotelMemberMapper.selectHotelMemberByUserId(hotelOrder.getUserId());
         Double balance = hotelMember.getBalance();
@@ -81,6 +96,8 @@ public class HotelOrderServiceImpl implements HotelOrderService {
     @Override
     @Transactional
     public void checkinHotelRoom(HotelOrder hotelOrder) {
+        long days;
+        Double payment;
         // 订单生命周期控制
         if ("已退房".equals(hotelOrder.getStatus()) || "已取消".equals(hotelOrder.getStatus())) {
             throw new RuntimeException("该订单流程已结束,不接受操作");
@@ -88,7 +105,14 @@ public class HotelOrderServiceImpl implements HotelOrderService {
         // 查询房间信息,获取房型价格
         HotelRoom hotelRoom = hotelRoomMapper.selectHotelRoomById(hotelOrder.getRoomId());
         HotelRoomType hotelRoomType = hotelRoomTypeMapper.selectHotelRoomTypeById(hotelRoom.getRoomTypeId());
-        Double payment = hotelRoomType.getPrice();
+        try {
+            // 计算入住天数并得出支付金额
+            days = DateUtil.between(Convert.toDate(hotelOrder.getCheckinDate()), Convert.toDate(hotelOrder.getCheckoutDate()), DateUnit.DAY);
+            payment = hotelRoomType.getPrice() * days;
+        } catch (RuntimeException e) {
+            StaticLog.error(e);
+            throw new RuntimeException("请提供入住日期和退房日期");
+        }
         // 如果没有入住日期,则设置为当前日期
         if (hotelOrder.getCheckinDate() == null) {
             hotelOrder.setCheckinDate(new DateTime().toSqlDate().toLocalDate());
@@ -193,6 +217,7 @@ public class HotelOrderServiceImpl implements HotelOrderService {
      *
      * @param userId       用户ID(可选)
      * @param roomId       房间ID(可选)
+     * @param roomNumber   房间号(可选)
      * @param orderNum     订单号(可选)
      * @param status       订单状态(可选)
      * @param reserveDate  预订日期(可选)
@@ -204,16 +229,81 @@ public class HotelOrderServiceImpl implements HotelOrderService {
      * @return 酒店订单列表
      */
     @Override
-    public PageBean<HotelOrder> getHotelOrders(Integer userId, Integer roomId, String orderNum, String status,
-                                               Date reserveDate, Date checkoutDate,
-                                               Integer pageNum, Integer pageSize,
-                                               String orderBy, String orderType) {
+    public PageBean<HotelOrder> getHotelOrders(Integer userId, Integer roomId, Integer roomNumber,
+                                               String orderNum, String status, Date reserveDate,
+                                               Date checkinDate, Date checkoutDate, Integer pageNum,
+                                               Integer pageSize, String orderBy, String orderType) {
         // 创建PageBean对象
         PageBean<HotelOrder> pageBean = new PageBean<>();
         // 开启分页查询
         try (Page<HotelOrder> page = PageHelper.startPage(pageNum, pageSize, orderBy + " " + orderType)) {
             // 调用Mapper完成查询
-            List<HotelOrder> roomTypeList = hotelOrderMapper.selectHotelOrders(userId, roomId, orderNum, status, reserveDate, checkoutDate);
+            List<HotelOrder> roomTypeList = hotelOrderMapper.selectHotelOrders(userId, roomId, roomNumber, orderNum, status, reserveDate, checkinDate, checkoutDate);
+            // 把数据填充到PageBean对象中
+            pageBean.setTotal(page.getTotal());
+            pageBean.setItems(roomTypeList);
+        }
+        return pageBean;
+    }
+
+    /**
+     * 获取酒店订单列表(VO)
+     *
+     * @param createTimeRange 订单创建时间范围
+     * @param reserveDate     预定日期
+     * @param checkinDate     入住日期
+     * @param checkoutDate    退房日期
+     * @param status          订单状态
+     * @param orderNum        订单号
+     * @param username        用户名
+     * @param phone           用户手机号
+     * @param roomNumber      房间号
+     * @param pageNum         当前页码
+     * @param pageSize        每页记录数
+     * @return 酒店订单列表分页数据
+     */
+    @Override
+    public PageBean<HotelOrderVO> getHotelOrders(String createTimeRange, Date reserveDate, Date checkinDate,
+                                                 Date checkoutDate, String status, String orderNum,
+                                                 String username, String phone, Integer roomNumber,
+                                                 Integer pageNum, Integer pageSize, String orderBy, String orderType) {
+        // 创建PageBean对象
+        PageBean<HotelOrderVO> pageBean = new PageBean<>();
+        // 开启分页查询
+        try (Page<HotelOrderVO> page = PageHelper.startPage(pageNum, pageSize, orderBy + " " + orderType)) {
+            // 调用Mapper完成查询
+            List<HotelOrderVO> hotelOrderList = hotelOrderMapper.selectHotelOrderList(createTimeRange, reserveDate,
+                    checkinDate, checkoutDate, status,
+                    orderNum, username, phone, roomNumber);
+            // 把数据填充到PageBean对象中
+            pageBean.setTotal(page.getTotal());
+            pageBean.setItems(hotelOrderList);
+        }
+        return pageBean;
+    }
+
+    /**
+     * 获取入住管理列表
+     *
+     * @param orderNum     订单号
+     * @param roomNumber   房间号
+     * @param checkinDate  入住日期
+     * @param checkoutDate 退房日期
+     * @param pageNum      当前页码
+     * @param pageSize     每页记录数
+     * @param status       订单状态
+     * @param orderBy      排序字段(可选,默认为checkin_date)
+     * @param orderType    排序方式(可选,默认为desc)
+     * @return 入住管理列表分页数据
+     */
+    @Override
+    public PageBean<CheckinVO> getCheckinList(String orderNum, Integer roomNumber, String checkinDate, String checkoutDate, Integer pageNum, Integer pageSize, String status, String orderBy, String orderType) {
+        // 创建PageBean对象
+        PageBean<CheckinVO> pageBean = new PageBean<>();
+        // 开启分页查询
+        try (Page<CheckinVO> page = PageHelper.startPage(pageNum, pageSize, orderBy + " " + orderType)) {
+            // 调用Mapper完成查询
+            List<CheckinVO> roomTypeList = hotelOrderMapper.getCheckinList(orderNum, roomNumber, checkinDate, checkoutDate, status);
             // 把数据填充到PageBean对象中
             pageBean.setTotal(page.getTotal());
             pageBean.setItems(roomTypeList);

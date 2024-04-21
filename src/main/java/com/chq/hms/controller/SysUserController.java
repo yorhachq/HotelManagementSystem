@@ -109,6 +109,11 @@ public class SysUserController {
         SysUser user = userService.findByUserName(username);
         return Result.success(user);
     }
+    @GetMapping("/userInfo/{id}")
+    public Result<SysUser> userInfo(@PathVariable String id) {
+        SysUser user = userService.findByUserId(id);
+        return Result.success(user);
+    }
 
     //更新用户信息
     @PutMapping("/update")

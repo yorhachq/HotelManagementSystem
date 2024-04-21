@@ -61,4 +61,14 @@
         </if>
     </select>
 
+    <select id="selectCount" resultType="int">
+        SELECT COUNT(*)
+        FROM hotel_room
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT *
+        FROM hotel_room
+    </select>
+
 </mapper>

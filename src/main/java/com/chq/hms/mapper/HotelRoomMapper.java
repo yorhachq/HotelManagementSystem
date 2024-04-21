@@ -8,7 +8,6 @@ import java.util.List;
 
 @Mapper
 public interface HotelRoomMapper {
-
     /**
      * 添加酒店房间
      *
@@ -44,4 +43,19 @@ public interface HotelRoomMapper {
                                      @Param("floorNumber") Integer floorNumber,
                                      @Param("roomTypeId") Integer roomTypeId,
                                      @Param("status") String status);
+
+    /**
+     * 查询酒店房间总数
+     *
+     * @return 酒店房间总数
+     */
+    int selectCount();
+
+    /**
+     * 查询所有房间
+     *
+     * @return 所有房间列表
+     */
+    List<HotelRoom> selectAll();
+
 }

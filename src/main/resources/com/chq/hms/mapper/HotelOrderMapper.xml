@@ -87,6 +87,9 @@
             <if test="roomId != null">
                 AND o.room_id = #{roomId}
             </if>
+            <if test="roomNumber != null">
+                AND r.room_number LIKE CONCAT('%', #{roomNumber}, '%')
+            </if>
             <if test="orderNum != null and orderNum != ''">
                 AND o.order_num LIKE CONCAT('%', #{orderNum}, '%')
             </if>
@@ -96,8 +99,99 @@
             <if test="reserveDate != null">
                 AND o.reserve_date = #{reserveDate}
             </if>
+            <if test="checkinDate != null">
+                AND o.checkin_date = #{checkinDate}
+            </if>
             <if test="checkoutDate != null">
                 AND o.checkout_date = #{checkoutDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOrdersBetweenDates" resultMap="HotelOrderVOResultMap">
+        SELECT *
+        FROM hotel_order
+        WHERE checkin_date BETWEEN #{startDate} AND #{endDate}
+           OR checkout_date BETWEEN #{startDate} AND #{endDate}
+           OR (checkin_date &lt;= #{startDate} AND checkout_date &gt;= #{endDate})
+    </select>
+
+    <select id="selectCheckinOrdersByDate" resultMap="HotelOrderVOResultMap">
+        SELECT *
+        FROM hotel_order
+        WHERE checkin_date &lt;= #{date}
+          AND checkout_date &gt;= #{date}
+    </select>
+
+    <!--获取入住管理列表-->
+    <select id="getCheckinList" resultType="com.chq.hms.domain.vo.CheckinVO">
+        SELECT
+        o.order_id, o.user_id, u.username,u.phone, u.gender,o.room_id, r.room_number,
+        t.type_name,o.order_num,o.checkin_date, o.checkout_date, o.payment
+        FROM
+        hotel_order o
+        LEFT JOIN sys_user u ON o.user_id = u.user_id
+        LEFT JOIN hotel_room r ON o.room_id = r.room_id
+        LEFT JOIN hotel_room_type t ON r.room_type_id = t.room_type_id
+        <where>
+            o.status = #{status}
+            <if test="roomNumber != null">
+                AND r.room_number LIKE CONCAT('%', #{roomNumber}, '%')
+            </if>
+            <if test="orderNum != null and orderNum != ''">
+                AND o.order_num LIKE CONCAT('%', #{orderNum}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND o.status = #{status}
+            </if>
+            <if test="checkinDate != null&amp;checkinDate != ''">
+                AND o.checkin_date = #{checkinDate}
+            </if>
+            <if test="checkoutDate != null&amp;checkoutDate != ''">
+                AND o.checkout_date = #{checkoutDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectHotelOrderList" resultType="com.chq.hms.domain.vo.HotelOrderVO">
+        SELECT
+        o.order_id, o.user_id, o.room_id, o.order_num, o.reserve_date, o.checkin_date,
+        o.checkout_date, o.status, o.payment, o.create_time, o.update_time,
+        u.username, u.phone, u.gender,
+        r.room_number,rt.type_name,
+        DATEDIFF(o.checkout_date, o.checkin_date) AS days
+        FROM
+        hotel_order o
+        LEFT JOIN sys_user u ON o.user_id = u.user_id
+        LEFT JOIN hotel_room r ON o.room_id = r.room_id
+        LEFT JOIN hotel_room_type rt ON r.room_type_id = rt.room_type_id
+        <where>
+            <if test="createTimeRange != null and createTimeRange != ''">
+                AND o.create_time BETWEEN #{createTimeRange}
+            </if>
+            <if test="reserveDate != null and reserveDate != ''">
+                AND o.reserve_date = #{reserveDate}
+            </if>
+            <if test="checkinDate != null and checkinDate != ''">
+                AND o.checkin_date = #{checkinDate}
+            </if>
+            <if test="checkoutDate != null and checkoutDate != ''">
+                AND o.checkout_date = #{checkoutDate}
+            </if>
+            <if test="status != null and status != ''">
+                AND o.status = #{status}
+            </if>
+            <if test="orderNum != null and orderNum != ''">
+                AND o.order_num LIKE CONCAT('%', #{orderNum}, '%')
+            </if>
+            <if test="username != null and username != ''">
+                AND u.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND u.phone LIKE CONCAT('%', #{phone}, '%')
+            </if>
+            <if test="roomNumber != null">
+                AND r.room_number = #{roomNumber}
             </if>
         </where>
     </select>
