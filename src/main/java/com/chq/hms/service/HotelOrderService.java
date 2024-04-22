@@ -6,6 +6,7 @@ import com.chq.hms.domain.vo.HotelOrderVO;
 import com.chq.hms.domain.vo.PageBean;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 酒店订单管理Service接口
@@ -76,10 +77,10 @@ public interface HotelOrderService {
      * @param pageSize        每页记录数
      * @return 酒店订单列表分页数据
      */
-    PageBean<HotelOrderVO> getHotelOrders(String createTimeRange, Date reserveDate, Date checkinDate,
-                                       Date checkoutDate, String status, String orderNum,
-                                       String username, String phone, Integer roomNumber,
-                                       Integer pageNum, Integer pageSize, String orderBy, String orderType);
+    PageBean<HotelOrderVO> getHotelOrders(List<String> createTimeRange, String reserveDate, String checkinDate,
+                                          String checkoutDate, String status, String orderNum,
+                                          String username, String phone, Integer roomNumber,
+                                          Integer pageNum, Integer pageSize, String orderBy, String orderType);
 
 
     /**

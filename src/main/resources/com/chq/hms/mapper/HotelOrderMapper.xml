@@ -166,9 +166,6 @@
         LEFT JOIN hotel_room r ON o.room_id = r.room_id
         LEFT JOIN hotel_room_type rt ON r.room_type_id = rt.room_type_id
         <where>
-            <if test="createTimeRange != null and createTimeRange != ''">
-                AND o.create_time BETWEEN #{createTimeRange}
-            </if>
             <if test="reserveDate != null and reserveDate != ''">
                 AND o.reserve_date = #{reserveDate}
             </if>
@@ -191,7 +188,13 @@
                 AND u.phone LIKE CONCAT('%', #{phone}, '%')
             </if>
             <if test="roomNumber != null">
-                AND r.room_number = #{roomNumber}
+                AND r.room_number LIKE CONCAT('%', #{roomNumber}, '%')
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND o.create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND o.create_time &lt;= #{endTime}
             </if>
         </where>
     </select>

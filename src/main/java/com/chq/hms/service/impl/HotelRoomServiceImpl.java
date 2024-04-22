@@ -1,6 +1,5 @@
 package com.chq.hms.service.impl;
 
-import cn.hutool.core.convert.Convert;
 import com.chq.hms.domain.HotelRoom;
 import com.chq.hms.domain.vo.PageBean;
 import com.chq.hms.mapper.HotelRoomMapper;
@@ -27,7 +26,7 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     public void addHotelRoom(HotelRoom hotelRoom) {
         hotelRoom.setStatus("空闲");
         // 拼接房间号(楼层数+房间号)
-        hotelRoom.setRoomNumber(Convert.toInt(hotelRoom.getFloorNumber().toString() + hotelRoom.getRoomNumber().toString()));
+//        hotelRoom.setRoomNumber(Convert.toInt(hotelRoom.getFloorNumber().toString() + hotelRoom.getRoomNumber().toString()));
         hotelRoomMapper.insertHotelRoom(hotelRoom);
     }
 

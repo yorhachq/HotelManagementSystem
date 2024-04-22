@@ -63,21 +63,23 @@ public interface HotelOrderMapper {
     /**
      * 获取酒店订单列表(VO)
      *
-     * @param createTimeRange 订单创建时间范围
-     * @param reserveDate     预定日期
-     * @param checkinDate     入住日期
-     * @param checkoutDate    退房日期
-     * @param status          订单状态
-     * @param orderNum        订单号
-     * @param username        用户名
-     * @param phone           用户手机号
-     * @param roomNumber      房间号
+     * @param startTime    订单创建起始时间
+     * @param endTime      订单创建截止时间
+     * @param reserveDate  预定日期
+     * @param checkinDate  入住日期
+     * @param checkoutDate 退房日期
+     * @param status       订单状态
+     * @param orderNum     订单号
+     * @param username     用户名
+     * @param phone        用户手机号
+     * @param roomNumber   房间号
      * @return 酒店订单列表
      */
-    List<HotelOrderVO> selectHotelOrderList(@Param("createTimeRange") String createTimeRange,
-                                            @Param("reserveDate") Date reserveDate,
-                                            @Param("checkinDate") Date checkinDate,
-                                            @Param("checkoutDate") Date checkoutDate,
+    List<HotelOrderVO> selectHotelOrderList(@Param("startTime") String startTime,
+                                            @Param("endTime") String endTime,
+                                            @Param("reserveDate") String reserveDate,
+                                            @Param("checkinDate") String checkinDate,
+                                            @Param("checkoutDate") String checkoutDate,
                                             @Param("status") String status,
                                             @Param("orderNum") String orderNum,
                                             @Param("username") String username,

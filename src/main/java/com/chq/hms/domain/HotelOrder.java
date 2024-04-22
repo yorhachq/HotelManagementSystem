@@ -6,6 +6,7 @@ import jakarta.validation.groups.Default;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 酒店订单
@@ -35,8 +36,8 @@ public class HotelOrder {
     // 支付金额(若已取消订单，前端加删除线处理后显示金额，且该笔订单不纳入营业额统计)
     private Double payment;
 
-    private LocalDate createTime;
-    private LocalDate updateTime;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 
     public interface Update extends Default {
     }

@@ -7,10 +7,9 @@ import com.chq.hms.domain.vo.HotelOrderVO;
 import com.chq.hms.domain.vo.PageBean;
 import com.chq.hms.service.HotelOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * 酒店订单
@@ -120,10 +119,10 @@ public class HotelOrderController {
      * @return 酒店订单列表分页数据
      */
     @GetMapping("/orderList")
-    public Result<PageBean<HotelOrderVO>> getHotelOrders(@RequestParam(required = false) String createTimeRange,
-                                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date reserveDate,
-                                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date checkinDate,
-                                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date checkoutDate,
+    public Result<PageBean<HotelOrderVO>> getHotelOrders(@RequestParam(required = false) List<String> createTimeRange,
+                                                         @RequestParam(required = false) String reserveDate,
+                                                         @RequestParam(required = false) String checkinDate,
+                                                         @RequestParam(required = false) String checkoutDate,
                                                          @RequestParam(required = false) String status,
                                                          @RequestParam(required = false) String orderNum,
                                                          @RequestParam(required = false) String username,

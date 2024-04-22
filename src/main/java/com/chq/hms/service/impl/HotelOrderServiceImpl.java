@@ -263,18 +263,28 @@ public class HotelOrderServiceImpl implements HotelOrderService {
      * @return 酒店订单列表分页数据
      */
     @Override
-    public PageBean<HotelOrderVO> getHotelOrders(String createTimeRange, Date reserveDate, Date checkinDate,
-                                                 Date checkoutDate, String status, String orderNum,
+    public PageBean<HotelOrderVO> getHotelOrders(List<String> createTimeRange, String reserveDate, String checkinDate,
+                                                 String checkoutDate, String status, String orderNum,
                                                  String username, String phone, Integer roomNumber,
                                                  Integer pageNum, Integer pageSize, String orderBy, String orderType) {
         // 创建PageBean对象
         PageBean<HotelOrderVO> pageBean = new PageBean<>();
         // 开启分页查询
         try (Page<HotelOrderVO> page = PageHelper.startPage(pageNum, pageSize, orderBy + " " + orderType)) {
+            List<HotelOrderVO> hotelOrderList;
             // 调用Mapper完成查询
-            List<HotelOrderVO> hotelOrderList = hotelOrderMapper.selectHotelOrderList(createTimeRange, reserveDate,
-                    checkinDate, checkoutDate, status,
-                    orderNum, username, phone, roomNumber);
+            if (createTimeRange == null || createTimeRange.isEmpty()) {
+                hotelOrderList = hotelOrderMapper.selectHotelOrderList(
+                        null, null, reserveDate,
+                        checkinDate, checkoutDate, status,
+                        orderNum, username, phone, roomNumber);
+            } else {
+                hotelOrderList = hotelOrderMapper.selectHotelOrderList(
+                        createTimeRange.get(0), createTimeRange.get(1), reserveDate,
+                        checkinDate, checkoutDate, status,
+                        orderNum, username, phone, roomNumber);
+            }
+
             // 把数据填充到PageBean对象中
             pageBean.setTotal(page.getTotal());
             pageBean.setItems(hotelOrderList);
