@@ -12,6 +12,7 @@ import com.chq.hms.util.JwtUtil;
 import com.chq.hms.util.Md5Util;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,8 @@ public class HotelMemberController {
     private HotelMemberService hotelMemberService;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Value("${env.default.avatar}")
+    private String avatar;
 
     /**
      * 会员注册
@@ -49,6 +52,7 @@ public class HotelMemberController {
             SysUser sysUser = new SysUser();
             sysUser.setUsername(username);
             sysUser.setPassword(password);
+            sysUser.setAvatar(avatar);
             hotelMemberService.registerMember(sysUser);
             return Result.success();
         } else {
@@ -125,18 +129,6 @@ public class HotelMemberController {
     }
 
     /**
-     * 更新会员信息
-     *
-     * @param hotelMember 会员信息
-     * @return 操作结果
-     */
-    @PutMapping("/update")
-    public Result<Void> updateMember(@RequestBody SysUser hotelMember) {
-        userService.update(hotelMember);
-        return Result.success();
-    }
-
-    /**
      * 删除会员(软删除)
      *
      * @param userId 用户ID
@@ -163,13 +155,27 @@ public class HotelMemberController {
     @GetMapping("/getmembers")
     public Result<PageBean<HotelMemberVO>> getMembers(
             @RequestParam(required = false) String username,
+            @RequestParam(required = false) String gender,
             @RequestParam(required = false) String phone,
             @RequestParam(required = false) String memberLevel,
+            @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(defaultValue = "member_id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderType) {
-        PageBean<HotelMemberVO> pageInfo = hotelMemberService.getMembers(username, phone, memberLevel, pageNum, pageSize, orderBy, orderType);
+        PageBean<HotelMemberVO> pageInfo = hotelMemberService.getMembers(username, gender, phone, memberLevel, status, pageNum, pageSize, orderBy, orderType);
         return Result.success(pageInfo);
+    }
+
+    /**
+     * 获取会员详细信息
+     *
+     * @param userId 用户ID
+     * @return 会员详细信息
+     */
+    @GetMapping("/info/{userId}")
+    public Result<HotelMemberVO> getMemberInfo(@PathVariable Integer userId) {
+        HotelMemberVO hotelMemberVO = hotelMemberService.getMemberInfo(userId);
+        return Result.success(hotelMemberVO);
     }
 }

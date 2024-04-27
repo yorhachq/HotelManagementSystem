@@ -19,6 +19,7 @@ public interface HotelMemberService {
 
     /**
      * 检查会员是否存在
+     *
      * @param username 用户名
      */
     boolean checkMemberExists(String username);
@@ -43,14 +44,24 @@ public interface HotelMemberService {
      *
      * @param username    用户名(可选)
      * @param phone       手机号(可选)
+     * @param gender      性别(可选)
      * @param memberLevel 会员等级(可选)
+     * @param status      账户状态(可选)
      * @param pageNum     页码(可选,默认为1)
      * @param pageSize    每页条数(可选,默认为10)
      * @param orderBy     排序字段(可选,默认为create_time)
      * @param orderType   排序方式(可选,默认为desc)
      * @return 会员列表
      */
-    PageBean<HotelMemberVO> getMembers(String username, String phone, String memberLevel,
-                                       Integer pageNum, Integer pageSize,
+    PageBean<HotelMemberVO> getMembers(String username, String gender, String phone, String memberLevel,
+                                       String status, Integer pageNum, Integer pageSize,
                                        String orderBy, String orderType);
+
+    /**
+     * 获取会员详细信息
+     *
+     * @param userId 用户ID
+     * @return 会员详细信息
+     */
+    HotelMemberVO getMemberInfo(Integer userId);
 }

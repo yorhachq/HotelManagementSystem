@@ -115,8 +115,10 @@ public class HotelMemberServiceImpl implements HotelMemberService {
      * 查询会员列表
      *
      * @param username    用户名(可选)
+     * @param gender      性别(可选)
      * @param phone       手机号(可选)
      * @param memberLevel 会员等级(可选)
+     * @param status      账户状态(可选)
      * @param pageNum     页码(可选,默认为1)
      * @param pageSize    每页条数(可选,默认为10)
      * @param orderBy     排序字段(可选,默认为create_time)
@@ -124,15 +126,15 @@ public class HotelMemberServiceImpl implements HotelMemberService {
      * @return 会员列表
      */
     @Override
-    public PageBean<HotelMemberVO> getMembers(String username, String phone, String memberLevel,
-                                              Integer pageNum, Integer pageSize,
+    public PageBean<HotelMemberVO> getMembers(String username, String gender, String phone, String memberLevel,
+                                              String status, Integer pageNum, Integer pageSize,
                                               String orderBy, String orderType) {
         // 创建PageBean对象
         PageBean<HotelMemberVO> pageBean = new PageBean<>();
         // 开启分页查询
         try (Page<HotelMemberVO> page = PageHelper.startPage(pageNum, pageSize, orderBy + " " + orderType)) {
             // 调用Mapper完成查询
-            List<HotelMemberVO> memberVOList = hotelMemberMapper.selectMemberVOs(username, phone, memberLevel);
+            List<HotelMemberVO> memberVOList = hotelMemberMapper.selectMemberVOs(username, gender, phone, memberLevel, status);
             // 把数据填充到PageBean对象中
             pageBean.setTotal(page.getTotal());
             pageBean.setItems(memberVOList);
@@ -160,5 +162,16 @@ public class HotelMemberServiceImpl implements HotelMemberService {
         } else {
             return "Lv.1";
         }
+    }
+
+    /**
+     * 获取会员详细信息
+     *
+     * @param userId 用户ID
+     * @return 会员详细信息
+     */
+    @Override
+    public HotelMemberVO getMemberInfo(Integer userId) {
+        return hotelMemberMapper.selectMemberInfo(userId);
     }
 }

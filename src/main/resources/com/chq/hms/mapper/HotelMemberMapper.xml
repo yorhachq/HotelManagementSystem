@@ -67,8 +67,8 @@
     <select id="selectMemberVOs" resultMap="MemberVOResultMap">
         SELECT
         m.member_id, m.user_id, m.member_level, m.member_points, m.balance,
-        u.username, u.gender, u.phone,
-        m.create_time, m.update_time
+        u.username, u.gender, u.phone, u.status,u.email,u.avatar,u.status,
+        u.create_time, u.update_time
         FROM hotel_member m
         LEFT JOIN sys_user u ON m.user_id = u.user_id
         <where>
@@ -76,12 +76,43 @@
             <if test="username != null and username != ''">
                 AND u.username LIKE CONCAT('%', #{username}, '%')
             </if>
+            <if test="gender != null and gender != ''">
+                AND u.gender = #{gender}
+            </if>
             <if test="phone != null and phone != ''">
                 AND u.phone LIKE CONCAT('%', #{phone}, '%')
             </if>
             <if test="memberLevel != null and memberLevel != ''">
                 AND m.member_level = #{memberLevel}
             </if>
+            <if test="status != null and status != ''">
+                AND u.status = #{status}
+            </if>
         </where>
+    </select>
+
+    <resultMap id="MemberVOMap" type="com.chq.hms.domain.vo.HotelMemberVO">
+        <id property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="gender" column="gender"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="avatar" column="avatar"/>
+        <result property="status" column="status"/>
+        <result property="memberLevel" column="member_level"/>
+        <result property="memberPoints" column="member_points"/>
+        <result property="balance" column="balance"/>
+    </resultMap>
+
+    <select id="selectMemberInfo" resultMap="MemberVOMap">
+        SELECT
+            u.user_id, u.username, u.gender, u.email, u.phone, u.avatar, u.status,u.create_time,u.update_time,
+            m.member_id, m.member_level, m.member_points, m.balance
+        FROM
+            sys_user u
+                LEFT JOIN sys_role r ON u.role_id = r.role_id
+                LEFT JOIN hotel_member m ON u.user_id = m.user_id
+        WHERE
+            u.user_id = #{userId} AND r.role_code = 'guest'
     </select>
 </mapper>

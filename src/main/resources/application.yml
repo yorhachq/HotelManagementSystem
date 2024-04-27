@@ -48,7 +48,9 @@ env:
   frontend:
     # 酒店前台用户界面地址
     ui-url: http://elysianclient.chqcloud.top/
-#    ui-url: http://localhost:3200
+  #    ui-url: http://localhost:3200
+  default:
+    avatar: https://yorha-chq-picture.oss-cn-shanghai.aliyuncs.com/elysian-nest/default_user.png
   qweather:
     # qweather api address
     geo-api: https://geoapi.qweather.com/

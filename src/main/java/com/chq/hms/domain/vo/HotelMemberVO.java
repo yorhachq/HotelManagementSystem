@@ -16,5 +16,7 @@ public class HotelMemberVO extends HotelMember {
     private String gender;
     // 手机号
     private String phone;
-
+    private String email;
+    private String avatar;
+    private String status;
 }
