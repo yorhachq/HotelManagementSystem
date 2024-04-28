@@ -56,7 +56,45 @@
     </update>
 
     <select id="selectSysUserById" resultMap="BaseResultMap">
-        SELECT * FROM sys_user WHERE user_id = #{userId}
+        SELECT *
+        FROM sys_user
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectEmployeeList" resultType="com.chq.hms.domain.vo.EmployeeVO">
+        SELECT
+        u.user_id, u.username, u.gender, u.email, u.phone, u.avatar, u.status,
+        r.role_name, r.role_code,r.create_time,r.update_time
+        FROM
+        sys_user u
+        LEFT JOIN sys_role r ON u.role_id = r.role_id
+        <where>
+            u.user_id!=#{selfId} AND r.role_code != 'guest'
+            <if test="username != null and username != ''">
+                AND u.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND u.phone LIKE CONCAT('%', #{phone}, '%')
+            </if>
+            <if test="email != null and email != ''">
+                AND u.email LIKE CONCAT('%', #{email}, '%')
+            </if>
+            <if test="roleCode != null and roleCode != ''">
+                AND r.role_code = #{roleCode}
+            </if>
+            <if test="gender != null and gender != ''">
+                AND u.gender = #{gender}
+            </if>
+            <if test="status != null and status != ''">
+                AND u.status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="listRoles" resultType="com.chq.hms.domain.SysRole">
+        SELECT *
+        FROM sys_role
+        WHERE role_code != 'guest'
     </select>
 
     <update id="update" parameterType="com.chq.hms.domain.SysUser">
@@ -73,6 +111,9 @@
             </if>
             <if test="roleId != null">
                 role_id = #{roleId},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar},
             </if>
             <if test="status != null">
                 status = #{status},

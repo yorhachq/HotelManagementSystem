@@ -3,6 +3,9 @@ package com.chq.hms.controller;
 import com.chq.hms.domain.Result;
 import com.chq.hms.domain.SysRole;
 import com.chq.hms.domain.SysUser;
+import com.chq.hms.domain.vo.EmployeeVO;
+import com.chq.hms.domain.vo.PageBean;
+import com.chq.hms.service.HotelMemberService;
 import com.chq.hms.service.SysUserService;
 import com.chq.hms.util.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -33,20 +37,24 @@ public class SysUserController {
     private SysUserService userService;
     @SuppressWarnings("all")
     @Autowired
+    private HotelMemberService hotelMemberService;
+    @SuppressWarnings("all")
+    @Autowired
     private StringRedisTemplate stringRedisTemplate;
     @SuppressWarnings("all")
     @Autowired
     private Ip2regionSearcher ip2regionSearcher;
     private static String verifyCode = "";
 
-    //用户注册
+    //添加用户(管理员)
     @PostMapping("/register")
-    public Result register(@Pattern(regexp = "^\\S{1,16}$") String username, @Pattern(regexp = "^\\S{1,16}$") String password) {
+    public Result register(@Pattern(regexp = "^\\S{1,16}$") String username, @Pattern(regexp = "^\\S{1,16}$") String password, @Pattern(regexp = "^\\b(admin|common)\\b$") String role) {
         //查询用户名是否占用
         SysUser user = userService.findByUserName(username);
         if (user == null) {
             //未占用，注册
-            userService.register(username, password);
+            Integer roleId = userService.findRoleByCode(role);
+            userService.register(username, password, roleId);
             return Result.success();
         } else {
             //已占用
@@ -100,17 +108,47 @@ public class SysUserController {
         return Result.error("密码错误!");
     }
 
+    /**
+     * 用户列表查询
+     *
+     * @param username 用户名,用于模糊查询
+     * @param phone    手机号,用于模糊查询
+     * @param email    邮箱,用于模糊查询
+     * @param roleCode 角色代号
+     * @param gender   性别
+     * @param status   账户状态
+     * @param pageNum  当前页码
+     * @param pageSize 每页记录数
+     * @return 员工列表分页数据
+     */
+    @GetMapping("/list")
+    public Result<PageBean<EmployeeVO>> list(@RequestParam(required = false) String username,
+                                             @RequestParam(required = false) String phone,
+                                             @RequestParam(required = false) String email,
+                                             @RequestParam(required = false) String roleCode,
+                                             @RequestParam(required = false) String gender,
+                                             @RequestParam(required = false) String status,
+                                             @RequestParam(defaultValue = "1") Integer pageNum,
+                                             @RequestParam(defaultValue = "10") Integer pageSize,
+                                             @RequestParam(defaultValue = "user_id") String orderBy,
+                                             @RequestParam(defaultValue = "asc") String orderType) {
+        PageBean<EmployeeVO> pageBean = userService.findEmployeeList(username, phone, email, roleCode, gender, status, pageNum, pageSize, orderBy, orderType);
+        return Result.success(pageBean);
+    }
+
     //获取用户详细信息
     @GetMapping("/userInfo")
-    public Result<SysUser> userInfo() {
+    public Result<SysUser> getUserInfo() {
         //根据用户名查询用户(从ThreadLocal中获取数据)
         Map<String, Object> map = ThreadLocalUtil.get();
         String username = (String) map.get("username");
         SysUser user = userService.findByUserName(username);
         return Result.success(user);
     }
+
+    //获取用户详细信息(管理员)
     @GetMapping("/userInfo/{id}")
-    public Result<SysUser> userInfo(@PathVariable String id) {
+    public Result<SysUser> getUserInfoById(@PathVariable("id") Integer id) {
         SysUser user = userService.findByUserId(id);
         return Result.success(user);
     }
@@ -132,6 +170,13 @@ public class SysUserController {
         return Result.error("目标用户与当前已登录用户不一致!");
     }
 
+    //更新用户信息(管理员)
+    @PutMapping("/updateByAdmin")
+    public Result updateByAdmin(@RequestBody SysUser user) {
+        userService.updateByAdmin(user);
+        return Result.success();
+    }
+
     /**
      * 更新用户头像
      *
@@ -149,7 +194,33 @@ public class SysUserController {
         return Result.success();
     }
 
-    //更新用户密码(已知密码)
+    /**
+     * 删除用户(软删除)
+     *
+     * @param userId 用户ID
+     * @return 操作结果
+     */
+    @DeleteMapping("/delete/{userId}")
+    public Result<Void> deleteMember(@PathVariable Integer userId) {
+        hotelMemberService.deleteMember(userId);
+        return Result.success();
+    }
+
+    // 角色列表查询(除guest外)
+    @GetMapping("/roles")
+    public Result<List<SysRole>> listRoles() {
+        List<SysRole> roles = userService.listRoles();
+        return Result.success(roles);
+    }
+
+    // 根据角色ID获取用户角色
+    @GetMapping("/getRoleByCode/{roleId}")
+    public Result<SysRole> getRoleByCode(@PathVariable Integer roleId) {
+        SysRole role = userService.findRoleById(roleId);
+        return Result.success(role);
+    }
+
+    //更新用户密码(自行更新，已知密码)
     @PatchMapping("/updatePwd")
     public Result updatePwd(@RequestBody Map<String, String> params, @RequestHeader("Authorization") String token) {
         //参数校验
@@ -175,6 +246,23 @@ public class SysUserController {
         //删除Redis中对应的token
         ValueOperations<String, String> valueOps = stringRedisTemplate.opsForValue();
         valueOps.getOperations().delete(token);
+        return Result.success();
+    }
+
+    //更新用户密码(管理员直接更新)
+    @PatchMapping("/updatePwdByAdmin")
+    public Result updatePwd(@RequestBody Map<String, String> params) {
+        //参数校验
+        String newPwd = params.get("newPwd");
+        if (!StringUtils.hasLength(newPwd)) {
+            return Result.error("请填写密码!");
+        }
+        if (!newPwd.matches("^\\S{5,16}$")) {
+            return Result.error("密码长度应为5~16位!");
+        }
+        Integer id = Integer.parseInt(params.get("userId"));
+        //完成密码更新
+        userService.updatePwd(id, newPwd);
         return Result.success();
     }
 

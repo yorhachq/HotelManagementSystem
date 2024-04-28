@@ -65,11 +65,11 @@ public class Route {
         StaticLog.info("Full routing permissions loaded\n{}", allRouteRoles);
 
         // 构建各个路由
-        Route permissionRoute = getPermissionRoute(allRouteRoles);
+//        Route permissionRoute = getPermissionRoute(allRouteRoles);
         Route personnelRoute = getPersonnelRoute(allRouteRoles);
         Route systemRoute = getSystemRoute(allRouteRoles);
 
-        return List.of(permissionRoute, personnelRoute, systemRoute);
+        return List.of(/*permissionRoute,*/ personnelRoute, systemRoute);
     }
 
     // 读取SysRole表所有数据，从而设置每个路由项的roles列表
@@ -82,8 +82,8 @@ public class Route {
 
         // 定义所有的路由名称(与前端的路由name字段对应，该name字段在前端具有唯一性)
         List<String> routeNameList = List.of(
-                "PermissionPage",
-                "PermissionButton",
+//                "PermissionPage",
+//                "PermissionButton",
                 "Member",
                 "Staff",
                 "Role",
@@ -181,7 +181,7 @@ public class Route {
                 ));
         personnelRoute.addChild(personnelChildrenMember);
         personnelRoute.addChild(personnelChildrenStaff);
-        personnelRoute.addChild(personnelChildrenRole);
+//        personnelRoute.addChild(personnelChildrenRole);
         return personnelRoute;
     }
 
