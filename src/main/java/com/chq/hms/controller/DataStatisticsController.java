@@ -1,6 +1,7 @@
 package com.chq.hms.controller;
 
 import cn.hutool.core.convert.Convert;
+import com.chq.hms.anno.OperationLog;
 import com.chq.hms.domain.Result;
 import com.chq.hms.domain.vo.DataStatistics;
 import com.chq.hms.service.DataStatisticsService;
@@ -43,6 +44,7 @@ public class DataStatisticsController {
     }
 
     // 获取今日模块数据(需求人数、提问数量、解决数量、用户满意度)
+    @OperationLog("数据获取：酒店运营数据总览")
     @GetMapping("/todayData")
     public Result<List<Map<String, Object>>> getTodayData() {
         // 检查空数据

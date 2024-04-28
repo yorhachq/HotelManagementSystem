@@ -111,39 +111,39 @@ public class Route {
         return allRouteRoles;
     }
 
-    private static Route getPermissionRoute(Map<String, List<String>> allRouteRoles) {
-        // 权限管理父路由
-        Route permissionRoute = Route.createParentRoute(
-                "/permission",
-                Map.of(
-                        "title", "menus.permission",
-                        "icon", "ep:lollipop",
-                        "rank", 10
-                ));
-        // 权限管理子路由
-        Children permissionChildPage = Route.createChildRoute(
-                "/permission/page/index",
-                "PermissionPage",
-                Map.of(
-                        "title", "menus.permissionPage",
-                        "roles", allRouteRoles.get("PermissionPage")
-                ));
-        Children permissionChildButton = Route.createChildRoute(
-                "/permission/button/index",
-                "PermissionButton",
-                Map.of(
-                        "title", "menus.permissionButton",
-                        "roles", allRouteRoles.get("PermissionButton"),
-                        "auths", List.of(
-                                "permission:btn:add",
-                                "permission:btn:edit",
-                                "permission:btn:delete"
-                        )
-                ));
-        permissionRoute.addChild(permissionChildPage);
-        permissionRoute.addChild(permissionChildButton);
-        return permissionRoute;
-    }
+//    private static Route getPermissionRoute(Map<String, List<String>> allRouteRoles) {
+//        // 权限管理父路由
+//        Route permissionRoute = Route.createParentRoute(
+//                "/permission",
+//                Map.of(
+//                        "title", "menus.permission",
+//                        "icon", "ep:lollipop",
+//                        "rank", 10
+//                ));
+//        // 权限管理子路由
+//        Children permissionChildPage = Route.createChildRoute(
+//                "/permission/page/index",
+//                "PermissionPage",
+//                Map.of(
+//                        "title", "menus.permissionPage",
+//                        "roles", allRouteRoles.get("PermissionPage")
+//                ));
+//        Children permissionChildButton = Route.createChildRoute(
+//                "/permission/button/index",
+//                "PermissionButton",
+//                Map.of(
+//                        "title", "menus.permissionButton",
+//                        "roles", allRouteRoles.get("PermissionButton"),
+//                        "auths", List.of(
+//                                "permission:btn:add",
+//                                "permission:btn:edit",
+//                                "permission:btn:delete"
+//                        )
+//                ));
+//        permissionRoute.addChild(permissionChildPage);
+//        permissionRoute.addChild(permissionChildButton);
+//        return permissionRoute;
+//    }
 
     private static Route getPersonnelRoute(Map<String, List<String>> allRouteRoles) {
         // 人员管理父路由
@@ -171,14 +171,14 @@ public class Route {
                         "icon", "raphael:employee",
                         "roles", allRouteRoles.get("Staff")
                 ));
-        Children personnelChildrenRole = Route.createChildRoute(
-                "/personnel/role",
-                "Role",
-                Map.of(
-                        "title", "menus.role",
-                        "icon", "ri:key-2-line",
-                        "roles", allRouteRoles.get("Role")
-                ));
+//        Children personnelChildrenRole = Route.createChildRoute(
+//                "/personnel/role",
+//                "Role",
+//                Map.of(
+//                        "title", "menus.role",
+//                        "icon", "ri:key-2-line",
+//                        "roles", allRouteRoles.get("Role")
+//                ));
         personnelRoute.addChild(personnelChildrenMember);
         personnelRoute.addChild(personnelChildrenStaff);
 //        personnelRoute.addChild(personnelChildrenRole);
@@ -196,14 +196,23 @@ public class Route {
                 ));
         // 系统管理子路由
         Children systemChildLog = Route.createChildRoute(
-                "/system/index",
-                "System",
+                "/system/sysLog",
+                "SysLog",
                 Map.of(
-                        "title", "menus.systemManagement",
-                        "icon", "ri:shield-keyhole-line",
+                        "title", "系统日志",
+                        "icon", "icon-park-outline:log",
+                        "roles", allRouteRoles.get("System")
+                ));
+        Children systemChildRechargeLog = Route.createChildRoute(
+                "/system/rechargeLog",
+                "RechargeLog",
+                Map.of(
+                        "title", "充值记录",
+                        "icon", "ic:outline-monetization-on",
                         "roles", allRouteRoles.get("System")
                 ));
         systemRoute.addChild(systemChildLog);
+        systemRoute.addChild(systemChildRechargeLog);
         return systemRoute;
     }
 }

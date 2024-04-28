@@ -116,7 +116,11 @@
             <artifactId>mica-ip2region</artifactId>
             <version>3.2.4</version>
         </dependency>
-
+        <!--AOP-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

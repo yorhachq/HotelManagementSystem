@@ -1,5 +1,6 @@
 package com.chq.hms.controller;
 
+import com.chq.hms.anno.OperationLog;
 import com.chq.hms.domain.Result;
 import com.chq.hms.domain.vo.AvailableRoomVO;
 import com.chq.hms.service.HotelRoomCalendarService;
@@ -18,7 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/hotelRoomCalendar")
 public class HotelRoomCalendarController {
-
+    @SuppressWarnings("all")
     @Autowired
     private HotelRoomCalendarService hotelRoomCalendarService;
 
@@ -27,6 +28,7 @@ public class HotelRoomCalendarController {
      * @param date 日期(yyyy-MM-dd)
      * @return 一个月的房态数据
      */
+    @OperationLog("数据获取：日历房态")
     @GetMapping("/monthData")
     public Result<Map<String, Integer>> getMonthData(@RequestParam String date) {
         Map<String, Integer> data = hotelRoomCalendarService.getRecentWeeksData(date);
@@ -38,6 +40,7 @@ public class HotelRoomCalendarController {
      * @param date 日期(yyyy-MM-dd)
      * @return 可用房间列表
      */
+    @OperationLog("数据获取：房间可用状态列表")
     @GetMapping("/availableRooms")
     public Result<List<AvailableRoomVO>> getAvailableRooms(@RequestParam String date) {
         List<AvailableRoomVO> availableRooms = hotelRoomCalendarService.getAvailableRooms(date);

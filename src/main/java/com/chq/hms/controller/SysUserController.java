@@ -1,5 +1,6 @@
 package com.chq.hms.controller;
 
+import com.chq.hms.anno.OperationLog;
 import com.chq.hms.domain.Result;
 import com.chq.hms.domain.SysRole;
 import com.chq.hms.domain.SysUser;
@@ -47,6 +48,7 @@ public class SysUserController {
     private static String verifyCode = "";
 
     //添加用户(管理员)
+    @OperationLog("业务处理：添加用户")
     @PostMapping("/register")
     public Result register(@Pattern(regexp = "^\\S{1,16}$") String username, @Pattern(regexp = "^\\S{1,16}$") String password, @Pattern(regexp = "^\\b(admin|common)\\b$") String role) {
         //查询用户名是否占用
@@ -63,6 +65,7 @@ public class SysUserController {
     }
 
     //用户登录
+    @OperationLog("系统功能：用户登录")
     @PostMapping("/login")
     //后端这里参数校验，不符合正则的话会抛异常，用户友好的提示设计在前端触发，此处为了前后端双重校验
     public Result login(@Pattern(regexp = "^\\S{1,16}$") String username, @Pattern(regexp = "^\\S{1,16}$") String password) {
@@ -121,6 +124,7 @@ public class SysUserController {
      * @param pageSize 每页记录数
      * @return 员工列表分页数据
      */
+    @OperationLog("数据获取：用户列表")
     @GetMapping("/list")
     public Result<PageBean<EmployeeVO>> list(@RequestParam(required = false) String username,
                                              @RequestParam(required = false) String phone,
@@ -137,6 +141,7 @@ public class SysUserController {
     }
 
     //获取用户详细信息
+    @OperationLog("数据获取：个人信息")
     @GetMapping("/userInfo")
     public Result<SysUser> getUserInfo() {
         //根据用户名查询用户(从ThreadLocal中获取数据)
@@ -147,6 +152,7 @@ public class SysUserController {
     }
 
     //获取用户详细信息(管理员)
+    @OperationLog("数据获取：用户详细信息")
     @GetMapping("/userInfo/{id}")
     public Result<SysUser> getUserInfoById(@PathVariable("id") Integer id) {
         SysUser user = userService.findByUserId(id);
@@ -154,6 +160,7 @@ public class SysUserController {
     }
 
     //更新用户信息
+    @OperationLog("业务处理：更新个人信息")
     @PutMapping("/update")
     public Result update(@RequestBody @Validated SysUser user) {
         //校验浏览器请求中的用户id是否与当前用户ThreadLocal中的id一致
@@ -171,6 +178,7 @@ public class SysUserController {
     }
 
     //更新用户信息(管理员)
+    @OperationLog("业务处理：更新用户信息")
     @PutMapping("/updateByAdmin")
     public Result updateByAdmin(@RequestBody SysUser user) {
         userService.updateByAdmin(user);
@@ -187,6 +195,7 @@ public class SysUserController {
 //        userService.updateAvatar(avatarUrl);
 //        return Result.success();
 //    }
+    @OperationLog("业务处理：更新个人头像")
     @PostMapping("/updateAvatar")
     public Result updateAvatar(@RequestBody Map<String, String> params) {
         String avatarUrl = params.get("avatar");
@@ -200,6 +209,7 @@ public class SysUserController {
      * @param userId 用户ID
      * @return 操作结果
      */
+    @OperationLog("业务处理：删除用户")
     @DeleteMapping("/delete/{userId}")
     public Result<Void> deleteMember(@PathVariable Integer userId) {
         hotelMemberService.deleteMember(userId);
@@ -207,6 +217,7 @@ public class SysUserController {
     }
 
     // 角色列表查询(除guest外)
+    @OperationLog("数据获取：员工列表")
     @GetMapping("/roles")
     public Result<List<SysRole>> listRoles() {
         List<SysRole> roles = userService.listRoles();
@@ -214,6 +225,7 @@ public class SysUserController {
     }
 
     // 根据角色ID获取用户角色
+    @OperationLog("数据获取：用户角色")
     @GetMapping("/getRoleByCode/{roleId}")
     public Result<SysRole> getRoleByCode(@PathVariable Integer roleId) {
         SysRole role = userService.findRoleById(roleId);
@@ -221,6 +233,7 @@ public class SysUserController {
     }
 
     //更新用户密码(自行更新，已知密码)
+    @OperationLog("业务处理：更新个人密码")
     @PatchMapping("/updatePwd")
     public Result updatePwd(@RequestBody Map<String, String> params, @RequestHeader("Authorization") String token) {
         //参数校验
@@ -250,6 +263,7 @@ public class SysUserController {
     }
 
     //更新用户密码(管理员直接更新)
+    @OperationLog("业务处理：更新用户密码")
     @PatchMapping("/updatePwdByAdmin")
     public Result updatePwd(@RequestBody Map<String, String> params) {
         //参数校验
@@ -267,6 +281,7 @@ public class SysUserController {
     }
 
     // 发送邮箱验证码
+    @OperationLog("系统功能：发送邮箱验证码")
     @PostMapping("/sendVerifyEmail")
     public Result sendVerifyEmail(@RequestBody Map<String, String> params) {
         //参数校验
@@ -280,6 +295,7 @@ public class SysUserController {
     }
 
     // 忘记密码重置(已绑邮箱，忘记密码)
+    @OperationLog("业务处理：忘记密码重置")
     @PostMapping("/resetPwd")
     public Result resetPwd(@RequestBody Map<String, String> params) {
         //参数校验
@@ -344,6 +360,7 @@ public class SysUserController {
     }
 
     // 加载天气信息
+    @OperationLog("系统功能：获取实时天气")
     @GetMapping("/weather")
     public Result getWeather(HttpServletRequest request) {
         IpInfo ipInfo = ip2regionSearcher.memorySearch(IpAddrUtil.getIpAddr(request));
@@ -365,6 +382,7 @@ public class SysUserController {
     }
 
     // 用户登出(销毁Redis中的token记录)
+    @OperationLog("系统功能：用户退出登录")
     @PostMapping("/logout")
     public Result logout(@RequestBody Map<String, String> params) {
         stringRedisTemplate.opsForValue().getOperations().delete(params.get("accessToken"));

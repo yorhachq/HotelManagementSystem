@@ -1,5 +1,6 @@
 package com.chq.hms.controller;
 
+import com.chq.hms.anno.OperationLog;
 import com.chq.hms.domain.Result;
 import com.chq.hms.util.AliOssUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ public class FileUploadController {
     @Autowired
     private AliOssUtil aliOssUtil;
 
+    @OperationLog("系统功能：上传文件")
     @PostMapping("/upload")
     public Result<String> upload(MultipartFile file) throws Exception {
         String originalFilename = file.getOriginalFilename();

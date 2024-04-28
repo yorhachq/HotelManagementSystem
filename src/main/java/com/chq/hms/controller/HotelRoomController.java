@@ -1,5 +1,6 @@
 package com.chq.hms.controller;
 
+import com.chq.hms.anno.OperationLog;
 import com.chq.hms.domain.HotelRoom;
 import com.chq.hms.domain.Result;
 import com.chq.hms.domain.vo.PageBean;
@@ -17,6 +18,7 @@ public class HotelRoomController {
     @SuppressWarnings("all")
     @Autowired
     private HotelRoomService hotelRoomService;
+    @SuppressWarnings("all")
     @Autowired
     private HotelRoomTypeService hotelRoomTypeService;
 
@@ -26,6 +28,7 @@ public class HotelRoomController {
      * @param hotelRoom 酒店房间信息
      * @return 操作结果
      */
+    @OperationLog("业务处理：添加酒店房间")
     @PostMapping
     public Result<Void> addHotelRoom(@RequestBody HotelRoom hotelRoom) {
         hotelRoomService.addHotelRoom(hotelRoom);
@@ -38,6 +41,7 @@ public class HotelRoomController {
      * @param hotelRoom 酒店房间信息
      * @return 操作结果
      */
+    @OperationLog("业务处理：更新酒店房间信息")
     @PutMapping
     public Result<Void> updateHotelRoom(@RequestBody HotelRoom hotelRoom) {
         hotelRoomService.updateHotelRoom(hotelRoom);
@@ -50,6 +54,7 @@ public class HotelRoomController {
      * @param roomId 房间ID
      * @return 操作结果
      */
+    @OperationLog("业务处理：删除酒店房间")
     @DeleteMapping("/{roomId}")
     public Result<Void> deleteHotelRoom(@PathVariable Integer roomId) {
         hotelRoomService.deleteHotelRoom(roomId);
@@ -69,6 +74,7 @@ public class HotelRoomController {
      * @param orderType   排序方式(可选,默认为asc)
      * @return 酒店房间列表
      */
+    @OperationLog("数据获取：酒店房间列表")
     @GetMapping
     public Result<PageBean<HotelRoom>> getHotelRooms(
             @RequestParam(required = false) Integer roomNumber,

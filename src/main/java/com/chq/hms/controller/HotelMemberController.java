@@ -1,5 +1,6 @@
 package com.chq.hms.controller;
 
+import com.chq.hms.anno.OperationLog;
 import com.chq.hms.domain.HotelRechargeRecord;
 import com.chq.hms.domain.Result;
 import com.chq.hms.domain.SysRole;
@@ -44,6 +45,7 @@ public class HotelMemberController {
      * @param password 密码
      * @return 注册结果
      */
+    @OperationLog("系统功能：会员注册")
     @PostMapping("/register")
     public Result<Void> registerMember(@Pattern(regexp = "^\\S{1,16}$") String username, @Pattern(regexp = "^\\S{1,16}$") String password) {
         //查询用户名是否占用
@@ -68,6 +70,7 @@ public class HotelMemberController {
      * @param password 密码
      * @return 登录结果
      */
+    @OperationLog("系统功能：会员登录")
     @PostMapping("/login")
     public Result<Object> loginMember(@Pattern(regexp = "^\\S{1,16}$") String username, @Pattern(regexp = "^\\S{1,16}$") String password) {
         // 检查会员是否存在
@@ -122,6 +125,7 @@ public class HotelMemberController {
      * @param rechargeRecord 充值记录
      * @return 操作结果
      */
+    @OperationLog("业务处理：会员充值")
     @PostMapping("/recharge")
     public Result<Void> rechargeMember(@RequestBody HotelRechargeRecord rechargeRecord) {
         hotelMemberService.rechargeMember(rechargeRecord);
@@ -134,6 +138,7 @@ public class HotelMemberController {
      * @param userId 用户ID
      * @return 操作结果
      */
+    @OperationLog("业务处理：删除会员")
     @DeleteMapping("/delete/{userId}")
     public Result<Void> deleteMember(@PathVariable Integer userId) {
         hotelMemberService.deleteMember(userId);
@@ -152,6 +157,7 @@ public class HotelMemberController {
      * @param orderType   排序方式(可选,默认为desc)
      * @return 会员列表
      */
+    @OperationLog("数据获取：会员列表")
     @GetMapping("/getmembers")
     public Result<PageBean<HotelMemberVO>> getMembers(
             @RequestParam(required = false) String username,
@@ -173,6 +179,7 @@ public class HotelMemberController {
      * @param userId 用户ID
      * @return 会员详细信息
      */
+    @OperationLog("数据获取：会员详细信息")
     @GetMapping("/info/{userId}")
     public Result<HotelMemberVO> getMemberInfo(@PathVariable Integer userId) {
         HotelMemberVO hotelMemberVO = hotelMemberService.getMemberInfo(userId);

@@ -1,5 +1,6 @@
 package com.chq.hms.controller;
 
+import com.chq.hms.anno.OperationLog;
 import com.chq.hms.domain.HotelOrder;
 import com.chq.hms.domain.Result;
 import com.chq.hms.domain.vo.CheckinVO;
@@ -27,6 +28,7 @@ public class HotelOrderController {
      * @param hotelOrder 酒店订单信息
      * @return 操作结果
      */
+    @OperationLog("业务处理：房间预订")
     @PostMapping("/reserve")
     public Result<Void> reserveHotelRoom(@RequestBody HotelOrder hotelOrder) {
         hotelOrderService.reserveHotelRoom(hotelOrder);
@@ -39,6 +41,7 @@ public class HotelOrderController {
      * @param hotelOrder 酒店订单信息
      * @return 操作结果
      */
+    @OperationLog("业务处理：办理入住")
     @PostMapping("/checkin")
     public Result<Void> checkinHotelRoom(@RequestBody HotelOrder hotelOrder) {
         hotelOrderService.checkinHotelRoom(hotelOrder);
@@ -51,6 +54,7 @@ public class HotelOrderController {
      * @param orderId 订单ID
      * @return 操作结果
      */
+    @OperationLog("业务处理：办理退房")
     @PutMapping("/checkout/{orderId}")
     public Result<Void> checkoutHotelRoom(@PathVariable Integer orderId) {
         hotelOrderService.checkoutHotelRoom(orderId);
@@ -63,6 +67,7 @@ public class HotelOrderController {
      * @param orderId 订单ID
      * @return 操作结果
      */
+    @OperationLog("业务处理：取消订单")
     @PutMapping("/cancel/{orderId}")
     public Result<Void> cancelHotelOrder(@PathVariable Integer orderId) {
         hotelOrderService.cancelHotelOrder(orderId);
@@ -118,6 +123,7 @@ public class HotelOrderController {
      * @param pageSize        每页记录数
      * @return 酒店订单列表分页数据
      */
+    @OperationLog("数据获取：酒店订单列表")
     @GetMapping("/orderList")
     public Result<PageBean<HotelOrderVO>> getHotelOrders(@RequestParam(required = false) List<String> createTimeRange,
                                                          @RequestParam(required = false) String reserveDate,
@@ -151,6 +157,7 @@ public class HotelOrderController {
      * @param orderType    排序方式(可选,默认为desc)
      * @return 入住管理列表分页数据
      */
+    @OperationLog("数据获取：入住信息列表")
     @GetMapping("/checkinList")
     public Result<PageBean<CheckinVO>> getCheckinList(@RequestParam(required = false) String orderNum,
                                                       @RequestParam(required = false) Integer roomNumber,

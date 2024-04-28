@@ -14,10 +14,14 @@ public class SysLog {
     private Integer logId;
     // 操作用户的ID
     @NotNull
-    private Integer usrId;
+    private Integer userId;
     // 行为
     @NotEmpty
     private String action;
+    //IP
+    private String ip;
+    // IP归属地
+    private String address;
     // 备注
     private String remark;
     // 日志记录时间

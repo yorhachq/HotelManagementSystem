@@ -22,6 +22,7 @@ public class AsyncRoutesController {
     @Autowired
     private SysRoleService sysRoleService;
 
+//    @OperationLog("加载动态路由")
     @GetMapping
     public Result getAsyncRoutes() {
         List<SysRole> sysRoleList = sysRoleService.listAllSysRoles();
