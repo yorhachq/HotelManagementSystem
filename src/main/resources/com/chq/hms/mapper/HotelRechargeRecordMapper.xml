@@ -13,4 +13,39 @@
         INSERT INTO hotel_recharge_record (member_id, amount, payment_method, create_time)
         VALUES (#{memberId}, #{amount}, #{paymentMethod}, NOW())
     </insert>
+
+    <resultMap id="HotelRechargeRecordVOMap" type="com.chq.hms.domain.vo.HotelRechargeRecordVO">
+        <result property="username" column="username"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="paymentMethod" column="payment_method"/>
+        <result property="amount" column="amount"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="selectPage" resultMap="HotelRechargeRecordVOMap">
+        SELECT
+        u.username, u.phone, u.email,
+        r.recharge_id, r.member_id, r.payment_method, r.amount, r.create_time
+        FROM
+        hotel_recharge_record r
+        LEFT JOIN hotel_member m ON r.member_id = m.member_id
+        LEFT JOIN sys_user u ON m.user_id = u.user_id
+        <where>
+            <if test="username != null and username != ''">
+                AND u.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND u.phone LIKE CONCAT('%', #{phone}, '%')
+            </if>
+            <if test="email != null and email != ''">
+                AND u.email LIKE CONCAT('%', #{email}, '%')
+            </if>
+            <if test="paymentMethod != null and paymentMethod != ''">
+                AND r.payment_method = #{paymentMethod}
+            </if>
+        </where>
+        ORDER BY r.create_time DESC
+    </select>
+
 </mapper>
