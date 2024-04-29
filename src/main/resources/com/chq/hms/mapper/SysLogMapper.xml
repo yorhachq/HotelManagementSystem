@@ -32,11 +32,14 @@
             <if test="action != null and action != ''">
                 AND l.action LIKE CONCAT('%', #{action}, '%')
             </if>
+            <if test="address != null and address != ''">
+                AND l.address LIKE CONCAT('%', #{address}, '%')
+            </if>
             <if test="username != null and username != ''">
                 AND u.username LIKE CONCAT('%', #{username}, '%')
             </if>
             <if test="roleCode != null and roleCode != ''">
-                AND u.role_code LIKE CONCAT('%', #{roleCode}, '%')
+                AND r.role_code LIKE CONCAT('%', #{roleCode}, '%')
             </if>
         </where>
         ORDER BY l.create_time DESC

@@ -24,9 +24,10 @@ public interface SysLogMapper {
      * 分页查询操作日志
      *
      * @param action   操作描述
+     * @param address  请求来源地址
      * @param username 操作人用户名
      * @param roleCode 操作人角色
      * @return 操作日志列表
      */
-    List<SysLogVO> selectPage(@Param("action") String action, @Param("username") String username, String roleCode);
+    List<SysLogVO> selectPage(@Param("action") String action, @Param("address") String address, @Param("username") String username, String roleCode);
 }

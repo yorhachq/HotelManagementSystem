@@ -25,10 +25,10 @@ public class SysLogServiceImpl implements SysLogService {
     }
 
     @Override
-    public PageBean<SysLogVO> findPage(Integer pageNum, Integer pageSize, String action, String username, String roleCode, String orderBy, String orderType) {
+    public PageBean<SysLogVO> findPage(Integer pageNum, Integer pageSize, String action, String address, String username, String roleCode, String orderBy, String orderType) {
         PageBean<SysLogVO> pageBean = new PageBean<>();
         try (Page<SysLogVO> page = PageHelper.startPage(pageNum, pageSize, orderBy + " " + orderType)) {
-            sysLogMapper.selectPage(action, username, roleCode);
+            sysLogMapper.selectPage(action, address, username, roleCode);
             pageBean.setTotal(page.getTotal());
             pageBean.setItems(page.getResult());
         }

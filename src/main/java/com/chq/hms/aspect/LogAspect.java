@@ -6,6 +6,7 @@ import com.chq.hms.domain.SysLog;
 import com.chq.hms.service.SysLogService;
 import com.chq.hms.util.IpAddrUtil;
 import com.chq.hms.util.JwtUtil;
+import com.chq.hms.util.ThreadLocalUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import net.dreamlu.mica.ip2region.core.Ip2regionSearcher;
 import net.dreamlu.mica.ip2region.core.IpInfo;
@@ -65,11 +66,15 @@ public class LogAspect {
             // 获取当前的用户
             HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
             String token = request.getHeader("Authorization");
+            Integer userId;
             if (token != null) {
                 token = token.replace("Bearer ", "");
+                Map<String, Object> claims = JwtUtil.parseToken(token);
+                userId = (Integer) claims.get("id");
+            } else {
+                Map<String, Object> claims = ThreadLocalUtil.get();
+                userId = (Integer) claims.get("id");
             }
-            Map<String, Object> claims = JwtUtil.parseToken(token);
-            Integer userId = (Integer) claims.get("id");
 
             // 获取IP及归属地
             String ip = IpAddrUtil.getIpAddr(request);

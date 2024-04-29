@@ -22,11 +22,12 @@ public interface SysLogService {
      * @param pageNum   当前页码
      * @param pageSize  每页记录数
      * @param action    操作描述
+     * @param address   请求来源地址
      * @param username  操作人用户名
      * @param roleCode  角色代码
      * @param orderBy   排序字段
      * @param orderType 排序方式
      * @return 操作日志分页数据
      */
-    PageBean<SysLogVO> findPage(Integer pageNum, Integer pageSize, String action, String username, String roleCode, String orderBy, String orderType);
+    PageBean<SysLogVO> findPage(Integer pageNum, Integer pageSize, String action,String address, String username, String roleCode, String orderBy, String orderType);
 }
