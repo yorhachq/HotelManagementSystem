@@ -52,7 +52,7 @@ public class DataStatistics {
                 yield "order_count";
             }
             case "revenue" -> {
-                name = "今日营业额";
+                name = "今日营业额(¥)";
                 yield "revenue";
             }
             default -> columnName;
@@ -61,7 +61,7 @@ public class DataStatistics {
         // 计算上日同比增长
         Integer yesterdayCount = Convert.toInt(yesterdayData.get(columnName));
         double increase = (value - yesterdayCount) * 100.0 / yesterdayCount;
-        percent = StrUtil.format("{}{}%", increase > 0 ? "+" : "-", String.format("%.2f", increase));
+        percent = StrUtil.format("{}{}%", increase > 0 ? "+ " : " ", String.format("%.2f", increase));
 
         // 本周数据概览
         String finalColumnName = columnName;

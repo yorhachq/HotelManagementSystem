@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/dataStatistics")
 public class DataStatisticsController {
+    @SuppressWarnings("all")
     @Autowired
     private DataStatisticsService dataStatisticsService;
 
@@ -25,17 +27,17 @@ public class DataStatisticsController {
     private void loadDayData() throws NullPointerException {
         Map<String, Object> todayData = dataStatisticsService.getTodayData();
         Map<String, Object> yesterdayData = dataStatisticsService.getYesterdayData();
-        allData = Map.of(
+        allData.putAll(Map.of(
                 "todayData", todayData,
-                "yesterdayData", yesterdayData);
+                "yesterdayData", yesterdayData));
     }
 
     private void loadWeekData() throws NullPointerException {
         List<Map<String, Object>> thisWeekData = dataStatisticsService.getThisWeekData();
         List<Map<String, Object>> lastWeekData = dataStatisticsService.getLastWeekData();
-        allData = Map.of(
+        allData.putAll(Map.of(
                 "thisWeekData", thisWeekData,
-                "lastWeekData", lastWeekData);
+                "lastWeekData", lastWeekData));
     }
 
     // 一周数据，遍历thisWeekData列表，逐项转换为Map
@@ -50,6 +52,7 @@ public class DataStatisticsController {
         // 检查空数据
         boolean nullCheck = false;
         try {
+            allData = new HashMap<>();
             // 从数据库加载数据
             loadDayData();
             loadWeekData();
@@ -89,6 +92,7 @@ public class DataStatisticsController {
         // 检查空数据
         boolean nullCheck = false;
         try {
+            allData = new HashMap<>();
             // 从数据库加载数据
             loadWeekData();
         } catch (NullPointerException e) {
