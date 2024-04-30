@@ -116,11 +116,11 @@
            OR (checkin_date &lt;= #{startDate} AND checkout_date &gt;= #{endDate})
     </select>
 
-    <select id="selectCheckinOrdersByDate" resultMap="HotelOrderVOResultMap">
+    <select id="selectCheckinOrdersBetweenDates" resultMap="HotelOrderVOResultMap">
         SELECT *
         FROM hotel_order
-        WHERE checkin_date &lt;= #{date}
-          AND checkout_date &gt;= #{date}
+        WHERE status IN ('已预订', '入住中')
+          AND checkin_date BETWEEN #{startDate} AND #{endDate}
     </select>
 
     <!--获取入住管理列表-->

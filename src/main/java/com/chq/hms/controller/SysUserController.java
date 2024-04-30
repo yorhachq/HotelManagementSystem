@@ -216,8 +216,8 @@ public class SysUserController {
         return Result.success();
     }
 
-    // 角色列表查询(除guest外)
-    @OperationLog("数据获取：员工列表")
+    // 角色列表查询
+    @OperationLog("数据获取：角色列表")
     @GetMapping("/roles")
     public Result<List<SysRole>> listRoles() {
         List<SysRole> roles = userService.listRoles();
@@ -320,7 +320,7 @@ public class SysUserController {
         } else if (user.getEmail() == null || user.getEmail().isEmpty()) {
             return Result.error("用户未绑定邮箱，无法重置密码，请联系超管处理!");
         } else if (!user.getEmail().equals(email)) {
-            return Result.error("邮箱与用户绑定邮箱不一致!");
+            return Result.error("验证邮箱与用户绑定邮箱不一致!");
         }
         try {
             userService.updatePwd(user.getUserId(), password);

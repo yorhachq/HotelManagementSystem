@@ -94,7 +94,6 @@
     <select id="listRoles" resultType="com.chq.hms.domain.SysRole">
         SELECT *
         FROM sys_role
-        WHERE role_code != 'guest'
     </select>
 
     <update id="update" parameterType="com.chq.hms.domain.SysUser">

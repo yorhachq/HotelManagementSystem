@@ -25,6 +25,7 @@ public class HotelRoomCalendarController {
 
     /**
      * 获取一个月的房态数据
+     *
      * @param date 日期(yyyy-MM-dd)
      * @return 一个月的房态数据
      */
@@ -37,13 +38,15 @@ public class HotelRoomCalendarController {
 
     /**
      * 获取指定日期的可用房间列表
-     * @param date 日期(yyyy-MM-dd)
+     *
+     * @param checkinDate 开始日期(yyyy-MM-dd)
+     * @param checkoutDate   结束日期(yyyy-MM-dd)
      * @return 可用房间列表
      */
     @OperationLog("数据获取：房间可用状态列表")
     @GetMapping("/availableRooms")
-    public Result<List<AvailableRoomVO>> getAvailableRooms(@RequestParam String date) {
-        List<AvailableRoomVO> availableRooms = hotelRoomCalendarService.getAvailableRooms(date);
+    public Result<List<AvailableRoomVO>> getAvailableRooms(@RequestParam String checkinDate, @RequestParam String checkoutDate) {
+        List<AvailableRoomVO> availableRooms = hotelRoomCalendarService.getAvailableRooms(checkinDate, checkoutDate);
         return Result.success(availableRooms);
     }
 }

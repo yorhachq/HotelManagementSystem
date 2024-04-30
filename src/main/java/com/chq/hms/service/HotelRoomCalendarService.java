@@ -20,11 +20,12 @@ public interface HotelRoomCalendarService {
 
     /**
      * 获取指定日期的可用房间列表
-     *
-     * @param date 日期(yyyy-MM-dd)
+
+     * @param startDate 开始日期(yyyy-MM-dd)
+     * @param endDate   结束日期(yyyy-MM-dd)
      * @return 可用房间列表
      */
-    List<AvailableRoomVO> getAvailableRooms(String date);
+    List<AvailableRoomVO> getAvailableRooms(String startDate, String endDate);
 
     /**
      * 获取当前日期前一周和后三周的房态数据

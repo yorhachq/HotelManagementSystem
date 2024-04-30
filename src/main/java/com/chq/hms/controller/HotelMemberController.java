@@ -9,6 +9,7 @@ import com.chq.hms.domain.vo.HotelMemberVO;
 import com.chq.hms.domain.vo.PageBean;
 import com.chq.hms.service.HotelMemberService;
 import com.chq.hms.service.SysUserService;
+import com.chq.hms.util.EmailUtil;
 import com.chq.hms.util.JwtUtil;
 import com.chq.hms.util.Md5Util;
 import jakarta.validation.constraints.Pattern;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -37,17 +39,18 @@ public class HotelMemberController {
     private StringRedisTemplate stringRedisTemplate;
     @Value("${env.default.avatar}")
     private String avatar;
+    private static String verifyCode = "";
 
     /**
-     * 会员注册
+     * 添加会员
      *
      * @param username 用户名
      * @param password 密码
      * @return 注册结果
      */
-    @OperationLog("系统功能：会员注册")
+    @OperationLog("业务处理：添加会员")
     @PostMapping("/register")
-    public Result<Void> registerMember(@Pattern(regexp = "^\\S{1,16}$") String username, @Pattern(regexp = "^\\S{1,16}$") String password) {
+    public Result<Void> addMember(@Pattern(regexp = "^\\S{1,16}$") String username, @Pattern(regexp = "^\\S{1,16}$") String password) {
         //查询用户名是否占用
         if (userService.findByUserName(username) == null) {
             //未占用，注册
@@ -61,6 +64,61 @@ public class HotelMemberController {
             //已占用
             return Result.error("用户名已被占用，换一个试试吧");
         }
+    }
+
+    /**
+     * 会员注册
+     *
+     * @param params 注册参数
+     * @return 注册结果
+     */
+    @OperationLog("系统功能：会员注册")
+    @PostMapping("/registerMember")
+    public Result<Void> registerMember(@RequestBody Map<String, String> params) {
+        //参数校验
+        String username = params.get("username");
+        String email = params.get("email");
+        String code = params.get("verifyCode");
+        String password = params.get("password");
+        if (!(StringUtils.hasLength(username) && StringUtils.hasLength(email) && StringUtils.hasLength(code) && StringUtils.hasLength(password))) {
+            return Result.error("确少必要的参数!");
+        }
+        if (!password.matches("^\\S{5,16}$")) {
+            return Result.error("密码长度应为5~16位!");
+        }
+        if (!verifyCode.equals(code)) {
+            return Result.error("验证码错误!");
+        }
+        //查询用户名是否占用
+        if (userService.findByUserName(username) == null) {
+            //未占用，注册
+            SysUser sysUser = new SysUser();
+            sysUser.setUsername(username);
+            sysUser.setPassword(password);
+            sysUser.setEmail(email);
+            sysUser.setAvatar(avatar);
+            hotelMemberService.registerMember(sysUser);
+            // 若成功，使本次验证码失效
+            verifyCode = "";
+            return Result.success();
+        } else {
+            //已占用
+            return Result.error("用户名已被占用，换一个试试吧");
+        }
+    }
+
+    // 发送邮箱验证码
+    @OperationLog("系统功能：发送邮箱验证码")
+    @PostMapping("/sendVerifyEmail")
+    public Result<Void> sendVerifyEmail(@RequestBody Map<String, String> params) {
+        //参数校验
+        String email = params.get("email");
+        if (!EmailUtil.checkEmailFormat(email)) {
+            return Result.error("请填写有效邮箱!");
+        }
+        //发送验证码
+        verifyCode = EmailUtil.sendVerifyEmail(email, "欢迎光临悦巢™酒店");
+        return Result.success();
     }
 
     /**

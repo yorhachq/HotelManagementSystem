@@ -99,10 +99,11 @@ public interface HotelOrderMapper {
     /**
      * 查询指定日期的入住订单
      *
-     * @param date 日期(yyyy-MM-dd)
+     * @param startDate 开始日期(yyyy-MM-dd)
+     * @param endDate   结束日期(yyyy-MM-dd)
      * @return 入住订单列表
      */
-    List<HotelOrder> selectCheckinOrdersByDate(@Param("date") String date);
+    List<HotelOrder> selectCheckinOrdersBetweenDates(@Param("startDate") String startDate,@Param("endDate") String endDate);
 
     /**
      * 获取入住管理列表

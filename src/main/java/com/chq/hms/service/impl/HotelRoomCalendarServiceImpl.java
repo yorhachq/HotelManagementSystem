@@ -38,6 +38,7 @@ public class HotelRoomCalendarServiceImpl implements HotelRoomCalendarService {
 
     /**
      * 获取一个月的房态数据(第一个周一至最后一个周日)
+     *
      * @param date 日期(yyyy-MM-dd)
      * @return 一个月的房态数据
      */
@@ -87,6 +88,7 @@ public class HotelRoomCalendarServiceImpl implements HotelRoomCalendarService {
 
     /**
      * 获取当前日期前一周和后三周的房态数据
+     *
      * @param date 日期(yyyy-MM-dd)
      * @return 房态数据
      */
@@ -134,21 +136,29 @@ public class HotelRoomCalendarServiceImpl implements HotelRoomCalendarService {
 
     /**
      * 获取指定日期的可用房间列表
-     * @param date 日期(yyyy-MM-dd)
+     *
+     * @param startDate 开始日期(yyyy-MM-dd)
+     * @param endDate   结束日期(yyyy-MM-dd)
      * @return 可用房间列表
      */
     @Override
-    public List<AvailableRoomVO> getAvailableRooms(String date) {
+    public List<AvailableRoomVO> getAvailableRooms(String startDate, String endDate) {
         // 查询指定日期的入住订单
-        List<HotelOrder> checkinOrders = hotelOrderMapper.selectCheckinOrdersByDate(date);
+        List<HotelOrder> checkinOrders = hotelOrderMapper.selectCheckinOrdersBetweenDates(startDate, endDate);
 
         // 查询所有房间
         List<HotelRoom> rooms = hotelRoomMapper.selectAll();
 
+        // 获取指定日期区间内已预订的房间ID列表
+        List<Integer> bookedRoomIds = checkinOrders.stream()
+                .map(HotelOrder::getRoomId)
+                .toList();
+
         // 过滤出可用房间
         List<HotelRoom> availableRooms = rooms.stream()
                 .filter(room -> checkinOrders.stream().noneMatch(order -> order.getRoomId().equals(room.getRoomId())))
-                .collect(Collectors.toList());
+                .filter(room -> !bookedRoomIds.contains(room.getRoomId()))
+                .toList();
 
         // 查询房型信息
         List<Integer> roomTypeIds = availableRooms.stream().map(HotelRoom::getRoomTypeId).collect(Collectors.toList());

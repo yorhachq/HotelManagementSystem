@@ -37,12 +37,17 @@ public class WebConfig implements WebMvcConfigurer {
                         "/hotelMember/recharge",
                         "/hotelMember/update",
                         "/hotelMember/delete/*",
-                        "/hotelMember/getmembers"
+                        "/hotelMember/getmembers",
+                        "/hotelMember/registerMember",
+                        "/hotelMember/sendVerifyEmail",
+                        "/client/*"
                 );
 
         registry.addInterceptor(guestLoginInterceptor)
                 //拦截白名单
                 .excludePathPatterns(
+                        "/hotelMember/registerMember",
+                        "/hotelMember/sendVerifyEmail",
                         //下面对AdminLoginInterceptor放行的白名单同样进行放行
                         "/sysUser/login",
                         "/sysUser/register",
