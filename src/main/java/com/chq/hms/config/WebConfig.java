@@ -40,7 +40,9 @@ public class WebConfig implements WebMvcConfigurer {
                         "/hotelMember/getmembers",
                         "/hotelMember/registerMember",
                         "/hotelMember/sendVerifyEmail",
-                        "/client/*"
+                        "/client/*",
+                        "/client/memberInfo/*",
+                        "/client/cancel/*"
                 );
 
         registry.addInterceptor(guestLoginInterceptor)
