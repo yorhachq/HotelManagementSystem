@@ -65,7 +65,7 @@ public class SysUserController {
     }
 
     //用户登录
-    @OperationLog("系统功能：用户登录")
+//    @OperationLog("系统功能：用户登录")
     @PostMapping("/login")
     //后端这里参数校验，不符合正则的话会抛异常，用户友好的提示设计在前端触发，此处为了前后端双重校验
     public Result login(@Pattern(regexp = "^\\S{1,16}$") String username, @Pattern(regexp = "^\\S{1,16}$") String password) {
@@ -382,7 +382,7 @@ public class SysUserController {
     }
 
     // 用户登出(销毁Redis中的token记录)
-    @OperationLog("系统功能：用户退出登录")
+//    @OperationLog("系统功能：用户退出登录")
     @PostMapping("/logout")
     public Result logout(@RequestBody Map<String, String> params) {
         stringRedisTemplate.opsForValue().getOperations().delete(params.get("accessToken"));
