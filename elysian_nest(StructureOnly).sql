@@ -11,7 +11,7 @@
  Target Server Version : 80027 (8.0.27)
  File Encoding         : 65001
 
- Date: 02/05/2024 18:51:28
+ Date: 28/05/2024 11:13:26
 */
 
 SET NAMES utf8mb4;
@@ -29,7 +29,7 @@ CREATE TABLE `data_statistics`  (
   `order_count` int NULL DEFAULT NULL COMMENT '今日订单笔数',
   `revenue` decimal(10, 2) NULL DEFAULT NULL COMMENT '今日营业额',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '酒店经营数据统计表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 58 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '酒店经营数据统计表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for hotel_member
@@ -68,7 +68,7 @@ CREATE TABLE `hotel_order`  (
   INDEX `member_id`(`user_id` ASC) USING BTREE,
   INDEX `hotel_order_ibfk_1`(`room_id` ASC) USING BTREE,
   CONSTRAINT `hotel_order_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `hotel_room` (`room_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '酒店订单信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 47 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '酒店订单信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for hotel_recharge_record
@@ -83,7 +83,7 @@ CREATE TABLE `hotel_recharge_record`  (
   PRIMARY KEY (`recharge_id`) USING BTREE,
   INDEX `member_id`(`member_id` ASC) USING BTREE,
   CONSTRAINT `hotel_recharge_record_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `hotel_member` (`member_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 60 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '酒店会员充值记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 78 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '酒店会员充值记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for hotel_room
@@ -131,7 +131,7 @@ CREATE TABLE `sys_log`  (
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   `create_time` datetime NULL DEFAULT NULL COMMENT '日志记录时间',
   PRIMARY KEY (`log_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1411 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3376 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sys_role
